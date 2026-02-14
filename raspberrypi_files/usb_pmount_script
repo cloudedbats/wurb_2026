@@ -1,0 +1,4 @@
+#!/bin/bash
+
+DEVICE=$1
+/usr/bin/pmount --umask 000 --noatime -w --sync /dev/${DEVICE} /media/USB-${DEVICE}

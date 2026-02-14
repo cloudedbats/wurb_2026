@@ -1,0 +1,118 @@
+# Configurations for CloudedBats WURB-2026.
+---
+wurb_app:
+  port: 8080
+  host: "0.0.0.0"
+  log_level: info
+
+audio_capture:
+  - device_name: Pettersson
+  - device_name: UltraMic # For Dodotronic.
+  - device_name: PIPPYG
+  - device_name: Bat_Detector
+  - device_name: AudioMoth
+    sampling_freq_hz: 384000
+  - device_name: USB2.0 Audio
+    sampling_freq_hz: 192000
+    channels: MONO-LEFT # From STEREO.
+  - device_name: USB Audio
+    sampling_freq_hz: 192000
+    channels: MONO-LEFT # From STEREO.
+  # - device_name: PART-OF-DEVICE-NAME
+  #   sampling_freq_hz: 384000 # Adjust Settings-System-Sound if Windows.
+  #   channels: MONO # MONO, MONO-LEFT, MONO-RIGHT.
+
+record:
+  targets:
+    - id: sda1
+      name: USB-1
+      os: Linux
+      media_path: /media/USB-sda1
+      rec_dir: wurb_recordings
+    - id: sdb1
+      name: USB-2
+      os: Linux
+      media_path: /media/USB-sdb1
+      rec_dir: wurb_recordings
+    - id: local
+      name: Local
+      executable_path_as_base: true
+      rec_dir: ../wurb_recordings
+      free_disk_limit: 500 # Unit MB.
+    # - id: sharedFolder
+    #   name: Shared folder
+    #   os: Windows
+    #   rec_dir: C:/Users/Public/Bats/wurb_recordings
+    # - id: ssd
+    #   name: SSD
+    #   os: Linux
+    #   media_path: /mnt/ssd
+    #   rec_dir: wurb_recordings
+    # - id: usbWurb01
+    #   name: USB Wurb01
+    #   os: Darwin # Darwin=macOS.
+    #   media_path: /Volumes/Wurb01
+    #   rec_dir: wurb_recordings
+
+annotations:
+  sources:
+    - id: local
+      name: Local
+      executable_path_as_base: true
+      rec_dir: ../wurb_recordings
+    - id: sda1
+      name: USB-1
+      os: Linux
+      media_path: /media/USB-sda1
+      rec_dir: wurb_recordings
+    - id: sdb1
+      name: USB-2
+      os: Linux
+      media_path: /media/USB-sdb1
+      rec_dir: wurb_recordings
+    # - id: sharedFolder
+    #   name: Shared folder
+    #   os: Windows
+    #   rec_dir: C:/Users/Public/Bats/wurb_recordings
+    # - id: ssd
+    #   name: SSD
+    #   os: Linux
+    #   media_path: /mnt/ssd
+    #   rec_dir: wurb_recordings
+    # - id: usbWurb01
+    #   name: USB Wurb01
+    #   os: Darwin
+    #   media_path: /Volumes/Wurb01
+    #   rec_dir: wurb_recordings
+
+gps_reader:
+  min_number_of_satellites: 3
+  adjust_detector_time: true
+  accepted_detector_time_diff_s: 60
+  gps_device_whitelist:
+    - 1546:01A8 # Vendor:Product used by "u-blox GNSS receiver".
+    - 067B:2303 # Vendor:Product used by "BU-353" and "BU-353S4".
+    - USB # Fallback for most other USB GPS dongles.
+  gps_control_loop_sleep_s: 20
+
+rec_manager:
+  control_loop_interval_s: 10
+
+wurb_logger:
+  max_client_messages: 50
+
+audio_playback:
+  - device_name: headphones
+    sampling_freq_hz: 48000
+    period_size: 2048
+    buffer_size: 4800
+    buffer_max_size: 10000
+    in_queue_length: 10
+
+audio_playback_pitch_shifting:
+  pitch_factor: 30
+  volume_percent: 50
+  filter_low_khz: 15.0
+  filter_high_khz: 90.0
+  in_queue_length: 10
+  overlap_factor: 1.5

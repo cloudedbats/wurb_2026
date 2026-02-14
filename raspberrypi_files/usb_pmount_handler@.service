@@ -1,0 +1,11 @@
+
+[Unit]
+Description=Mount USB with pmount.
+BindsTo=dev-%i.device
+After=dev-%i.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/usb_pmount_script %I
+ExecStop=/usr/bin/pumount /dev/%I

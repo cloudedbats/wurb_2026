@@ -1,0 +1,11 @@
+
+# Python.
+venv
+__pycache__
+*.pyc
+# Pyinstaller.
+build
+dist
+# WURB
+wurb_logging/**
+wurb_settings/**

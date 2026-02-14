@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WURB-2026</title>
+
+    <!-- Bulma stylesheets: https://bulma.io/ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', path='css/bulma.min.css') }}"> -->
+
+    <script src="https://cdn.plot.ly/plotly-3.3.1.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script src="{{ url_for('static', path='js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='js/record.js') }}"></script>
+    <script src="{{ url_for('static', path='js/record_client.js') }}"></script>
+    <script src="{{ url_for('static', path='js/annotations.js') }}"></script>
+    <script src="{{ url_for('static', path='js/annotations_client.js') }}"></script>
+    <script src="{{ url_for('static', path='js/administration.js') }}"></script>
+    <script src="{{ url_for('static', path='js/administration_client.js') }}"></script>
+    <script src="{{ url_for('static', path='js/mousetrap.js') }}"></script>
+    <script src="{{ url_for('static', path='js/mousetrap_bindings.js') }}"></script>
+    <!-- <script src="{{ url_for('static', path='js/main.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/record.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/record_client.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/annotations.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/annotations_client.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/administration.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/administration_client.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/mousetrap.js/?v=100') }}"></script>
+    <script src="{{ url_for('static', path='js/mousetrap_bindings.js/?v=100') }}"></script> -->
+</head>
+
+<body onLoad="fetchModules()">
+
+
+    <section class="hero is-fullheight is-fullwidth">
+        <div class="hero-head has-background-black">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <div class="navbar-item is-clickable">
+                        <img src="{{ url_for('static', path='images/cloudedbats_logo.png') }}"
+                            onclick="toggleModuleAbout()">
+                    </div>
+                    <p class="navbar-item p-0">
+                        <span
+                            class="is-clickable is-family-sans-serif has-text-weight-bold has-text-link is-size-6 mr-3"
+                            onclick="toggleModuleAbout()">
+                            WURB-2026
+                        </span>
+                    </p>
+                </div>
+            </nav>
+            <div class="container is-fluid mb-3">
+                <div class="buttons is-centered">
+                    <button id="moduleRecordId" onclick="activateModuleRecord()"
+                        class="button is-rounded is-size-7 is-inverted">Record</button>
+                    <button id="moduleAnnotationsId" onclick="activateModuleAnnotations()"
+                        class="button is-rounded is-size-7 is-inverted">Annotations</button>
+                    <button id="moduleAdminId" onclick="activateModuleAdministration()"
+                        class="button is-rounded is-size-7 is-inverted">Administration</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-body has-background-grey m-0 p-0">
+            <div class="container is-fluid p-2">
+                <!-- <div id="heroBodyCameraId">
+                    <p class="subtitle m-5">Loading...</p>
+                </div> -->
+                <div id="heroBodyRecordId" class="is-centered" hidden>
+                    <p class="title m-5">NOT LOADED...</p>
+                </div>
+                <div id="heroBodyAnnotationsId" class="is-centered" hidden>
+                    <p class="title m-5">NOT LOADED...</p>
+                </div>
+                <div id="heroBodyAdminId" class="is-centered" hidden>
+                    <p class="title m-5">NOT LOADED...</p>
+                </div>
+                <div id="heroBodyAboutId" class="is-centered" hidden>
+                    <!-- <p class="subtitle m-5">Loading...</p> -->
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="hero-foot has-background-black p-4">
+            <nav class="tabs is-fullwidth">
+                <ul class="is-pulled-left">
+                    <li>
+                        <p class="ml-3">Detector time:</p>
+                    </li>
+                    <li>
+                        <p class="pl-1"><span id="detectorTimeId"></span></p>
+                    </li>
+                </ul>
+                <ul class="is-pulled-right">
+                    <li>
+                        <p class="is-clickable is-pulled-right mr-3" onclick="toggleModuleAbout()">About</>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+</body>
+
+</html>

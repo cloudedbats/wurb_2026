@@ -1,0 +1,537 @@
+<article class="message is-fullwidth has-background-grey-dark mb-1 pb-2">
+    <div class="message-header is-bordered">
+        <span id="cameraTitleId">Sound recorder</span>
+        <div class="select is-rounded is-size-7">
+            <select id="recModeSelectId" onchange="modeSelectOnChange(updateDetector=true)">
+                <option value="mode-off">
+                    Microphone - Off
+                </option>
+                <option disabled>
+                    ───────────
+                </option>
+                <option value="mode-on">
+                    Recording - On (continuously)
+                </option>
+                <option value="mode-auto">
+                    Recording - Auto detection
+                </option>
+                <option value="mode-manual">
+                    Recording - Manual triggering
+                </option>
+                <option disabled>
+                    ───────────
+                </option>
+                <option value="mode-scheduler-on">
+                    Scheduler - Recording on
+                </option>
+                <option value="mode-scheduler-auto">
+                    Scheduler - Auto detection
+                </option>
+                <option disabled>
+                    ───────────
+                </option>
+                <option value="load-user-default">
+                    Load "User default" settings
+                </option>
+                <option value="load-start-up">
+                    Load "Start-up" settings
+                </option>
+                <option value="load-factory-default">
+                    Load "Factory default"
+                    settings
+                </option>
+                <option disabled>
+                    ───────────
+                </option>
+                <option value="detector-power-off">
+                    Detector - Power off...
+                </option>
+            </select>
+        </div>
+        <div id="buttonTriggerId" hidden>
+            <button onclick="activateRecordTrigger()" class="button is-rounded is-size-7">Trigger</button>
+        </div>
+        <button id="buttonSettingsId" onclick="recToggleSettings()" class="button is-rounded is-size-7">
+            <span id="recSettingsTextId">Settings</span>
+        </button>
+    </div>
+
+    <div id="recManualTriggeringId" style="visibility:hidden; overflow:hidden; height:0; width:0;">
+        <div style="border:1px solid white; margin: 0px; padding: 25px;">
+            <div class="field is-grouped is-grouped-centered">
+                <button style="margin:5px;" class="button is-info is-rounded is-large" onclick="manualTrigger()">
+                    Trigger
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="recDetectorPowerOffId" style="visibility:hidden; overflow:hidden; height:0; width:0;">
+        <div style="border:1px solid white; margin: 0px; padding: 25px;">
+            <div class="field is-grouped is-grouped-centered">
+                <button style="margin:5px;" class="button is-small is-rounded is-info"
+                    onclick="raspberryPiControl('rpiShutdown')">
+                    Shutdown
+                </button>
+                <button style="margin:5px;" class="button is-small is-rounded is-info"
+                    onclick="raspberryPiControl('rpiReboot')">
+                    Restart
+                </button>
+                <button style="margin:5px;" class="button is-small is-rounded is-info"
+                    onclick="raspberryPiControl('rpiCancel')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="recRecordId">
+        <div class="fixed-grid has-5-cols my-2">
+            <div class="grid mt--4">
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-6">Status</p>
+                </div>
+                <div class="cell is-col-span-2 has-text-weight-bold">
+                    <span id="recStatusId">Waiting...</span>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-6">Detector time</p>
+                </div>
+                <div class="cell is-col-span-2 has-text-weight-bold">
+                    <span id="recDetectorTimeId"></span>
+                </div>
+                <div class="cell"></div>
+            </div>
+        </div>
+
+        <div class="table-container mb-2 mx-4" style="height: 10em; overflow: auto;">
+            <table id="recLogTableId" class="table has-background-grey is-fullwidth is-size-7">
+                <tbody>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container is-fluid">
+            <div class="buttons is-centered">
+                <button style="margin:5px;" class="button is-rounded is-size-7" onclick="recStatus()">
+                    Show status
+                </button>
+                <button style="margin:5px;" class="button is-rounded is-size-7" onclick="setDetectorTime()">
+                    Set time
+                </button>
+            </div>
+        </div>
+    </div>
+</article>
+
+<div id="recLocationId">
+    <article class="message is-fullwidth has-background-grey-dark mb-1 pb-2">
+        <div class="message-header is-bordered">
+            <span id="cameraTitleId">Geographic location</span>
+            <div class="select is-rounded is-size-7">
+                <select id="geoSourceSelectId" onchange="geoLocationSourceOnChange(updateDetector=true)">
+                    <option value="geo-not-used">Not used</option>
+                    <option value="geo-manual">Manually entered</option>
+                    <option value="geo-gps">GPS
+                    <option value="geo-gps-or-manual">GPS or Manually entered
+                    </option>
+                    <option value="geo-last-gps-or-manual">
+                        GPS or Last found or Manually entered
+                    </option>
+                    </option>
+                </select>
+            </div>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="fixed-grid has-5-cols my-2">
+            <div class="grid mt--4">
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-6">Status</p>
+                </div>
+                <div class="cell is-col-span-3 has-text-weight-bold">
+                    <span id="geoStatusId">Waiting...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed-grid has-5-cols mb-2 mt-4">
+            <div class="grid">
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right mt-1">Latitude</p>
+                </div>
+                <div class="cell">
+                    <div class="control">
+                        <input id="geoLatitudeDdId" class="input" type="number" step="0.0001" min="-90.0" max="90.0"
+                            placeholder="15.6789">
+                    </div>
+                </div>
+                <div class="cell is-col-span-2"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right mt-1">Longitude</p>
+                </div>
+                <div class="cell">
+                    <div class="control">
+                        <input id="geoLongitudeDdId" class="input" type="number" step="0.0001" min="-180.0" max="180.0"
+                            placeholder="12.3456">
+                    </div>
+                </div>
+                <div class="cell is-col-span-2"></div>
+            </div>
+        </div>
+
+        <div class="container is-fluid">
+            <div class="buttons is-centered">
+                <button id="geoLocationButtonId" style="margin:5px;" class="button is-rounded is-size-7"
+                    onclick="saveLocation()">
+                    <span id="geoButtonTextId">Save</span>
+                </button>
+            </div>
+        </div>
+    </article>
+</div>
+
+<div id="recSettingsId" hidden>
+    <article class="message is-fullwidth has-background-grey-dark">
+        <div class="message-header is-bordered">
+            <span id="settingsTitleId">Settings</span>
+            <div class="is-pulled-right">
+                <button class="delete is-pulled-right" onclick="recToggleSettings()"></button>
+            </div>
+        </div>
+
+        <div class="fixed-grid has-5-cols">
+            <div class="grid mt-4 mb-0">
+                <div class="cell is-col-span-2"></div>
+                <div class="cell is-col-span-3">
+                    <p class="is-size-6 has-text-weight-bold">
+                        Basic settings
+                    </p>
+                </div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Directory name</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <input id="recFileDirectoryId" class="input is-size-7" type="text" placeholder="Input">
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Sound file name prefix</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <input id="recFilenamePrefixId" class="input is-size-7" placeholder="wurb" value="wurb">
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Automatic detection: Low limit (kHz)
+                    </p>
+                </div>
+                <div class="cell">
+                    <div class="control">
+                        <input id="recDetectionLimitId" class="input  is-size-7" type="number" placeholder="15.0"
+                            value="15.0">
+                    </div>
+                </div>
+                <div class="cell is-col-span-2"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Automatic detection: Sensitivity (dBFS)</p>
+                </div>
+                <div class="cell">
+                    <div class="control">
+                        <input id="recDetectionSensitivityId" class="input is-size-7" type="number" placeholder="-50">
+                    </div>
+                </div>
+                <div class="cell is-col-span-2"></div>
+
+
+
+                <div class="cell is-col-span-2"></div>
+                <div class="cell is-col-span-3">
+                    <p class="is-size-6 has-text-weight-bold">
+                        Scheduler settings
+                    </p>
+                </div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Start recording at</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="select is-size-7">
+                        <select id="recSchedulerStartEventId">
+                            <option value="on-sunset">Sunset</option>
+                            <option value="on-dusk">Dusk</option>
+                            <option value="on-dawn">Dawn</option>
+                            <option value="on-sunrise">Sunrise</option>
+                            <option value="on-00">00:00</option>
+                            <option value="on-01">01:00</option>
+                            <option value="on-02">02:00</option>
+                            <option value="on-03">03:00</option>
+                            <option value="on-04">04:00</option>
+                            <option value="on-05">05:00</option>
+                            <option value="on-06">06:00</option>
+                            <option value="on-07">07:00</option>
+                            <option value="on-08">08:00</option>
+                            <option value="on-09">09:00</option>
+                            <option value="on-10">10:00</option>
+                            <option value="on-11">11:00</option>
+                            <option value="on-12">12:00</option>
+                            <option value="on-13">13:00</option>
+                            <option value="on-14">14:00</option>
+                            <option value="on-15">15:00</option>
+                            <option value="on-16">16:00</option>
+                            <option value="on-17">17:00</option>
+                            <option value="on-18">18:00</option>
+                            <option value="on-19">19:00</option>
+                            <option value="on-20">20:00</option>
+                            <option value="on-21">21:00</option>
+                            <option value="on-22">22:00</option>
+                            <option value="on-23">23:00</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Adjust start time (minutes)</p>
+                </div>
+                <div class="cell">
+                    <div class="control">
+                        <input id="recSchedulerStartAdjustId" class="input is-size-7" type="number" placeholder="-15"
+                            value="-15">
+                    </div>
+                </div>
+                <div class="cell is-col-span-2"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Stop recording at</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control is-size-7">
+                        <div class="select">
+                            <select id="recSchedulerStopEventId">
+                                <option value="off-sunset">Sunset</option>
+                                <option value="off-dusk">Dusk</option>
+                                <option value="off-dawn">Dawn</option>
+                                <option value="off-sunrise">Sunrise</option>
+                                <option value="off-00">00:00</option>
+                                <option value="off-01">01:00</option>
+                                <option value="off-02">02:00</option>
+                                <option value="off-03">03:00</option>
+                                <option value="off-04">04:00</option>
+                                <option value="off-05">05:00</option>
+                                <option value="off-06">06:00</option>
+                                <option value="off-07">07:00</option>
+                                <option value="off-08">08:00</option>
+                                <option value="off-09">09:00</option>
+                                <option value="off-10">10:00</option>
+                                <option value="off-11">11:00</option>
+                                <option value="off-12">12:00</option>
+                                <option value="off-13">13:00</option>
+                                <option value="off-14">14:00</option>
+                                <option value="off-15">15:00</option>
+                                <option value="off-16">16:00</option>
+                                <option value="off-17">17:00</option>
+                                <option value="off-18">18:00</option>
+                                <option value="off-19">19:00</option>
+                                <option value="off-20">20:00</option>
+                                <option value="off-21">21:00</option>
+                                <option value="off-22">22:00</option>
+                                <option value="off-23">23:00</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Adjust stop time (minutes)</p>
+                </div>
+                <div class="cell">
+                    <div class="control">
+                        <input id="recSchedulerStopAdjustId" class="input is-size-7" type="number" placeholder="15"
+                            value="15">
+                    </div>
+                </div>
+                <div class="cell is-col-span-2"></div>
+
+
+
+                <div class="cell is-col-span-2"></div>
+                <div class="cell is-col-span-3">
+                    <p class="is-size-6  has-text-weight-bold">
+                        More settings
+                    </p>
+                </div>
+
+                <!-- <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Automatic date in directory name</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <div class="select is-size-7">
+                            <select id="recFileDirectoryDateOptionId">
+                                <option value="date-not-used">Not used</option>
+                                <option value="date-pre-true">Add before - Use date
+                                </option>
+                                <option value="date-pre-before">Add before - Use date before
+                                    midnight
+                                </option>
+                                <option value="date-pre-after">Add before - Use date after
+                                    midnight
+                                </option>
+                                <option value="date-post-true">Add after - Use date
+                                </option>
+                                <option value="date-post-before">Add after - Use date before
+                                    midnight
+                                </option>
+                                <option value="date-post-after">Add after - Use date after
+                                    midnight
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell"></div> -->
+
+                <!-- <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Automatic detection algorithm</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <div class="select is-size-7">
+                            <select id="recDetectionAlgorithmId">
+                                <option value="detection-none">None (everything is recorded)
+                                </option>
+                                <option value="detection-simple">Simple (single trigging event)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div> -->
+
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Length of recorded sound files</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <div class="select is-size-7">
+                            <select id="recRecLengthId">
+                                <option value="4">4 seconds</option>
+                                <option value="5">5 seconds</option>
+                                <option value="6">6 seconds</option>
+                                <option value="7">7 seconds</option>
+                                <option value="8">8 seconds</option>
+                                <option value="9">9 seconds</option>
+                                <option value="10">10 seconds</option>
+                                <option value="12">12 seconds</option>
+                                <option value="15">15 seconds</option>
+                                <option value="20">20 seconds</option>
+                                <option value="30">30 seconds</option>
+                                <option value="40">40 seconds</option>
+                                <option value="50">50 seconds</option>
+                                <option value="60">1 minute</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Recorded sound file type (FS or TE)</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <div class="select is-size-7">
+                            <select id="recTypeId">
+                                <option value="FS">Full Spectrum (FS)
+                                </option>
+                                <option value="TE">Time Expansion (TE), 10x
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-2">Save current settings as</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <button style="margin:5px;" class="button is-rounded  is-size-7"
+                            onclick="saveUserDefaultSettings()">
+                            "User default"
+                        </button>
+                        <button style="margin:5px;" class="button is-rounded i is-size-7"
+                            onclick="saveStartupSettings()">
+                            "Start-up"
+                        </button>
+                    </div>
+                </div>
+                <div class="cell"></div>
+
+                <div class="cell is-col-span-2">
+                    <p class="is-pulled-right is-size-7 mt-1">Define start-up configuration</p>
+                </div>
+                <div class="cell is-col-span-2">
+                    <div class="control">
+                        <div class="select is-size-7">
+                            <select id="settingsStartupOptionId">
+                                <option value="as-last-session">Start-up with same settings as last
+                                    session</option>
+                                <option value="startup-settings">Start-up with "Start-up" settings
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell"></div>
+            </div>
+        </div>
+
+        <hr class="m-0">
+
+        <div class="container is-fluid">
+            <div class="buttons is-centered p-2">
+                <button style="margin:5px;" class="button is-rounded is-size-7" onclick="saveSettings()">
+                    Save
+                </button>
+                <button style="margin:5px;" class="button is-rounded is-size-7" onclick="getSettings()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+
+    </article>
+</div>

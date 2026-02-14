@@ -1,0 +1,312 @@
+<article class="message is-fullwidth has-background-grey-dark mb-1 pb-2">
+
+    <div class="message-header is-bordered">
+        <span id="cameraTitleId">Field annotations</span>
+        <button id="buttonShortcutsId" onclick="annoToggleShortcuts()" class="button is-rounded is-size-7">
+            <span id="annoShortcutsTextId">Shortcuts</span>
+        </button>
+    </div>
+
+    <div id="annoBodyId">
+        <p class="mx-5 my-2">
+            Source&nbsp;folders&nbsp;/&nbsp;Monitoring&nbsp;nights&nbsp;/&nbsp;Recordings
+        </p>
+        <div class="buttons is--centered mx-4 mb-2">
+            <div class="select is-rounded is-size-7">
+                <select id="annoSelectSourceId" onchange="annoSourceChanged()">
+                    <option value="select">Select:</option>
+                </select>
+            </div>
+            <div class="select is-rounded is-size-7">
+                <select id="annoSelectNightId" onchange="annoNightChanged()">
+                    <option value="select">Select:</option>
+                </select>
+            </div>
+        </div>
+        <div class="buttons is--centered mx-4 mb-2">
+            <div class="select is-rounded is-size-7">
+                <select id="annoSelectRecId" onchange="annoRecChanged()">
+                    <option value="select">Select:</option>
+                </select>
+            </div>
+            <button id="annoUpdateId" onclick="annoUpdate()" class="button is-rounded is-size-7 ml-2">Update</button>
+        </div>
+
+        <div class="container is-fluid mb-2 mt-0">
+            <div class="buttons is-centered mt-0">
+                <button id="annoViewMetadataButtonId" onclick="annoToggleViewMetadata()"
+                    class="button is-rounded is-size-7">
+                    Data
+                </button>
+                <button id="annoViewSpectrogramButtonId" onclick="annoToggleViewSpectrogram()"
+                    class="button is-rounded is-size-7">
+                    Spectrogram
+                </button>
+                <button id="annoViewDetailsButtonId" onclick="annoToggleViewDetails()"
+                    class="button is-rounded is-size-7" disabled>
+                    Details
+                </button>
+            </div>
+        </div>
+
+        <div style="min-height: 160px">
+            <div id="annoViewMetadataId" class="table-container mb-2t mx-4">
+                <table class="table has-background-grey is-size-7">
+                    <tbody>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">File</td>
+                            <th colspan="5" style="white-space: nowrap;"><span style="white-space: nowrap;"
+                                    id="annoMetadataRecordFileId"></span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Quality</td>
+                            <th colspan="1" style="white-space: nowrap;"><span id="annoMetadataQualityId"></span>
+                            </th>
+                            <td class="has-text-right" style="white-space: nowrap;">Tags</td>
+                            <th colspan="3" style="white-space: nowrap;"><span id="annoMetadataTagsId"></span></th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Comments</td>
+                            <th colspan="5" style="white-space: nowrap;"><span id="annoMetadataCommentsId"></span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Local date</td>
+                            <th colspan="1" style="white-space: nowrap;"><span id="annoMetadataLocalDateId"></span>
+                            </th>
+                            <td class="has-text-right" style="white-space: nowrap;">Latitude</td>
+                            <th colspan="1" style="white-space: nowrap;"><span id="annoMetadataLatitudeId"></span>
+                            </th>
+                            <td class="has-text-right" style="white-space: nowrap;">Peak (kHz)</td>
+                            <th colspan="1" style="white-space: nowrap; width: 90%;"><span
+                                    id="annoMetadataPeakKhzId"></span></th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Local time</td>
+                            <th colspan="1" style="white-space: nowrap;"><span id="annoMetadataLocalTimeId"></span>
+                            </th>
+                            <td class="has-text-right" style="white-space: nowrap;">Longitude</td>
+                            <th colspan="1" style="white-space: nowrap;"><span id="annoMetadataLongitudeId"></span>
+                            </th>
+                            <td class="has-text-right" style="white-space: nowrap;">Peak (dBFS)</td>
+                            <th colspan="1" style="white-space: nowrap; width: 90%;"><span
+                                    id="annoMetadataPeakDbfsId"></span></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="annoViewSpectrogramId" class="field " hidden>
+                <div class="control">
+                    <figure class="image is-3by1">
+                        <img id="annoSpectrogramBufferId">
+                        <div id="annoSpectrogramLoadingId" class="is-overlay is-3by1 has-background-grey-lighter"
+                            style="opacity: 0.5;" hidden>
+                            <label class="label is-centered pt-6">
+                                Loading...
+                            </label>
+                        </div>
+                    </figure>
+                </div>
+            </div>
+
+            <div id="annoViewDetailsId" class="field" hidden>
+                <div class="control has-background-success">
+                    <figure class="image is-3by1">
+                        <iframe class="has-ratio" width="100" height="100" src="" frameborder="5" allowfullscreen>
+                        </iframe>
+                    </figure>
+                </div>
+            </div>
+        </div>
+
+        <div class="container is-fluid mt-0">
+            <div class="buttons is-centered mt-0">
+                <button id="annoFirstId" onclick="annoFirst()" class="button is-rounded is-size-7">
+                    <span id="annoFirstTextId" style="width: 85px;">First</span>
+                </button>
+                <button id="annoPreviousId" onclick="annoPrevious()" class="button is-rounded is-size-7">
+                    <span id="annoPreviousTextId" style="width: 50px;">Previous</span>
+                </button>
+                <button id="annoNextId" onclick="annoNext()" class="button is-rounded is-size-7">
+                    <span id="annoNextTextId" style="width: 50px;">Next</span>
+                </button>
+                <button id="annoLastId" onclick="annoLast()" class="button is-rounded is-size-7">
+                    <span id="annoLastTextId" style="width: 80px;">Last</span>
+                </button>
+            </div>
+        </div>
+
+        <p class="mx-4 my-2">
+            Quality&nbsp;/&nbsp;Tags&nbsp;/&nbsp;Comments
+            <span id="annoRecordingShortInfoId" class="has-text-weight-bold"></span>
+        </p>
+
+        <div class="field ml-5">
+            <div class="content">
+                <div class="container">
+                    <div class="control">
+                        <label class="radio">
+                            <input id="annoQ0Id" type="radio" name="quality" onchange="annoSetQ0()">
+                            Q0 (trash)
+                        </label>
+                        <label class="radio ml-4">
+                            <input id="annoQ1Id" type="radio" name="quality" onchange="annoSetQ1()">
+                            Q1 (red)
+                        </label>
+                        <label class="radio ml-4">
+                            <input id="annoQ2Id" type="radio" name="quality" onchange="annoSetQ2()">
+                            Q2 (yellow)
+                        </label>
+                        <label class="radio ml-4">
+                            <input id="annoQ3Id" type="radio" name="quality" onchange="annoSetQ3()">
+                            Q3 (green)
+                        </label>
+                        <label class="radio ml-4">
+                            <input id="annoQNotAssignedId" type="radio" name="quality" onchange="annoSetQNotAssigned()">
+                            Not assigned
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container pb-4 ml-4">
+            <div class="buttons">
+                <button id="anno-FM-CF-FM-Id" onclick="toggleTag(this)"
+                    class="button is-rounded is-size-7">FM-CF-FM</button>
+                <button id="anno-FM-Id" onclick="toggleTag(this)" class="button is-rounded is-size-7">FM</button>
+                <button id="anno-FM-QCF-Id" onclick="toggleTag(this)"
+                    class="button is-rounded is-size-7">FM-QCF</button>
+                <button id="anno-QCF-Id" onclick="toggleTag(this)" class="button is-rounded is-size-7">QCF</button>
+                <button id="anno-FM+H2-Id" onclick="toggleTag(this)" class="button is-rounded is-size-7">FM+H2</button>
+                <button id="anno-QCF+FM-Id" onclick="toggleTag(this)"
+                    class="button is-rounded is-size-7">QCF+FM</button>
+            </div>
+        </div>
+
+        <div class="container pb-4 ml-4">
+            <div class="buttons">
+                <button id="anno-Social-Id" onclick="toggleTag(this)"
+                    class="button is-rounded is-size-7">Social</button>
+                <button id="anno-Birds-Id" onclick="toggleTag(this)" class="button is-rounded is-size-7">Birds</button>
+                <button id="anno-Mammals-Id" onclick="toggleTag(this)"
+                    class="button is-rounded is-size-7">Mammals</button>
+                <button id="anno-Crickets-Id" onclick="toggleTag(this)"
+                    class="button is-rounded is-size-7">Crickets</button>
+            </div>
+        </div>
+
+        <div class="field mx-4">
+            <p class="control">
+                <input class="input" type="text" id="annoCommentsId" placeholder="Comments on recording"
+                    onchange="annoSaveAnnotations();">
+            </p>
+        </div>
+
+        <div class="container">
+            <div class="buttons is-centered">
+                <button id="annoClearId" onclick="annoQuickClear()" class="button is-rounded is-size-7">Clear</button>
+                <button id="annoCopyId" onclick="annoQuickCopy()" class="button is-rounded is-size-7">Copy</button>
+                <button id="annoPasteId" onclick="annoQuickPaste()" class="button is-rounded is-size-7"
+                    disabled>Paste</button>
+                <button id="annoPasteNextId" onclick="annoQuickPasteNext()" class="button is-rounded is-size-7"
+                    disabled>Paste+next</button>
+                <button id="annoDownloadId" onclick="annoQuickDownload()"
+                    class="button is-rounded is-size-7">Download</button>
+            </div>
+        </div>
+    </div>
+</article>
+
+<div id="annoShortcutsId" hidden>
+    <article class="message is-fullwidth has-background-grey-dark pb-4">
+        <div class="message-header is-bordered">
+            <span id="settingsTitleId">Shortcuts</span>
+            <div class="is-pulled-right">
+                <button class="delete is-pulled-right" onclick="annoToggleShortcuts()"></button>
+            </div>
+        </div>
+
+        <div class="table-container m-4">
+            <!-- <table class="table is-bordered is-striped is-narrow is-hoverable is-size-6"> -->
+            <table class="table has-background-grey is-size-7">
+                <thead>
+                    <tr>
+                        <th>Quick key</th>
+                        <th>Action</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>shift+x</td>
+                        <td>Q0</td>
+                        <td>Set quality Q0 (trash).</td>
+                    </tr>
+                    <tr>
+                        <td>shift+0</td>
+                        <td>Q0</td>
+                        <td>Set quality Q0 (trash).</td>
+                    </tr>
+                    <tr>
+                        <td>shift+1</td>
+                        <td>Q1</td>
+                        <td>Set quality Q1 (red).</td>
+                    </tr>
+                    <tr>
+                        <td>shift+2</td>
+                        <td>Q2</td>
+                        <td>Set quality Q2 (yellow).</td>
+                    </tr>
+                    <tr>
+                        <td>shift+3</td>
+                        <td>Q3</td>
+                        <td>Set quality Q3 (green).</td>
+                    </tr>
+                    <tr>
+                        <td>shift+left</td>
+                        <td>Previous</td>
+                        <td>Go to previous recording.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+right</td>
+                        <td>Next</td>
+                        <td>Go to next recording.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+q</td>
+                        <td>Clear</td>
+                        <td>Clear quality, tags and comments.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+c</td>
+                        <td>Copy</td>
+                        <td>Copy quality, tags and comments.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+up</td>
+                        <td>Copy</td>
+                        <td>Copy quality, tags and comments.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+v</td>
+                        <td>Paste</td>
+                        <td>Paste quality, tags and comments.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+down</td>
+                        <td>Paste</td>
+                        <td>Paste quality, tags and comments.</td>
+                    </tr>
+                    <tr>
+                        <td>shift+enter</td>
+                        <td>Paste and next</td>
+                        <td>Paste quality, tags and comments. Go to next recording.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+</div>

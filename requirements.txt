@@ -1,0 +1,39 @@
+
+--prefer-binary
+
+# API and web.
+fastapi
+uvicorn
+jinja2
+aiofiles
+websockets
+requests
+# Audio.
+pyaudio
+sounddevice
+# Calculations.
+numpy
+scipy
+# Files.
+psutil
+pyusb
+# Plotting.
+matplotlib
+pybase64
+# GPS.
+pyserial
+# pyserial-asyncio # Not maintained.
+pyserial-asyncio-fast
+# Date/time and sun/moon.
+pytz
+python-dateutil
+astral
+# Config.
+pyyaml
+# Reports.
+xlsxwriter
+# VS Code.
+pylint
+black
+# Executables.
+pyinstaller

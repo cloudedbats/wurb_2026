@@ -1,0 +1,4 @@
+
+# SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", MODE="0664", GROUP="wurb"
+
+SUBSYSTEM=="usb", ATTR{idVendor}=="287d", ATTR{idProduct}=="0146", GROUP="wurb", MODE="0664"

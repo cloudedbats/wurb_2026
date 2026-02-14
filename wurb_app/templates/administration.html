@@ -1,0 +1,202 @@
+<article class="message is-fullwidth has-background-grey-dark mb-1 pb-2">
+
+    <div class="message-header is-bordered">
+        <span id="cameraTitleId">Administration</span>
+    </div>
+
+    <div id="adminBodyId">
+        <p class="mx-5 my-2">
+            Source&nbsp;folders&nbsp;/&nbsp;Monitoring&nbsp;nights
+        </p>
+        <div class="buttons is--centered mx-4 mb-2">
+            <div class="select is-rounded is-size-7">
+                <select id="adminSelectSourceId" onchange="adminSourceChanged()">
+                    <option value="select">Select:</option>
+                </select>
+            </div>
+            <div class="select is-rounded is-size-7">
+                <select id="adminSelectNightId" onchange="adminNightChanged()">
+                    <option value="select">Select:</option>
+                </select>
+            </div>
+            <button id="adminUpdateId" onclick="adminUpdate()" class="button is-rounded is-size-7 ml-2">Update</button>
+        </div>
+
+        <div class="container is-fluid mx-4 mb-2 mt-0">
+            <div class="buttons is-centered mt-0">
+                <button id="adminViewDataButtonId" onclick="adminToggleViewData()" class="button is-rounded is-size-7">
+                    Data
+                </button>
+                <button id="adminViewActivityButtonId" onclick="adminToggleViewActivity()"
+                    class="button is-rounded is-size-7">
+                    Activity
+                </button>
+                <button id="adminViewMapButtonId" onclick="adminToggleViewMap()" class="button is-rounded is-size-7">
+                    Map
+                </button>
+            </div>
+        </div>
+
+        <div style="min-height: 160px">
+            <div id="adminViewDataId" class="table-container mx-4 mb-2">
+                <table class="table has-background-grey is-size-7">
+                    <tbody>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Monitoring night
+                            </td>
+                            <th colspan="5" style="width: 90%;"><span id="adminMonitoringNightId"></span></th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Source folder
+                            </td>
+                            <th colspan="5"><span id="adminDirPathId"></span></th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Number of sound
+                                files</td>
+                            <th colspan="1"><span id="adminNumberOfSoundFilesId"></span></th>
+                            <td class="has-text-right" style="white-space: nowrap;">Number of Q1
+                            </td>
+                            <th colspan="3"><span id="adminNumberOfQ1Id"></span></th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Number of "Not
+                                Assigned"</td>
+                            <th colspan="1"><span id="adminNumberOfNoAssignedId"></span></th>
+                            <td class="has-text-right" style="white-space: nowrap;">Number of Q2
+                            </td>
+                            <th colspan="3" style="width: 60%;"><span id="adminNumberOfQ2Id"></span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="has-text-right" style="white-space: nowrap;">Number of Q0
+                                (trash)</td>
+                            <th colspan="1"><span id="adminNumberOfQ0Id"></span></th>
+                            <td class="has-text-right" style="white-space: nowrap;">Number of Q3
+                            </td>
+                            <th colspan="3" style="width: 60%;"><span id="adminNumberOfQ3Id"></span>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="adminViewActivityId" class="fixed-grid has-3-cols m-4" hidden>
+                <div class="grid">
+                    <div class="cell is-col-span-3">
+                        <div class="is-centered is-3by1" id="activityPlotId" style="height: 250px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminViewMapId" class="fixed-grid has-3-cols m-4" hidden>
+                <div class="grid">
+                    <div class="cell is-col-span-3">
+                        <div class="is-centered is-3by1" id="leafletMapId" style="height: 250px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container is-fluid mx-4 mt-0">
+            <div class="buttons is-centered mt-0">
+                <button id="adminPreviousId" onclick="adminPrevious()" class="button is-rounded is-size-7">
+                    Previous night
+                </button>
+                <button id="adminNextId" onclick="adminNext()" class="button is-rounded is-size-7">
+                    Next night
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p class="mx-5 my-2">
+        Cleanup
+    </p>
+
+    <div class="buttons mx-4 mb-2">
+        <button id="adminRemoveQ0Id" onclick="adminCommand('confirmRemoveQ0')" class="button is-rounded is-size-7">
+            Remove all Q0 (trash)
+        </button>
+        <button id="adminRemoveNaId" onclick="adminCommand('confirmRemoveNa')" class="button is-rounded is-size-7 ml-1">
+            Remove all "Not assigned"
+        </button>
+    </div>
+
+    <div id="confirmRemoveQ0Id" class="mx-4" style="visibility:hidden; overflow:hidden; height:0; width:0;">
+        <div style="border:1px solid white; margin: 0px; padding: 25px;" class="p-2 m-2">
+            <label class="label m-0">
+                Do you really want to remove all Q0 (trash)?
+            </label>
+            <div class="field is-grouped is-grouped-centered">
+                <button style="margin:5px;" class="button is-rounded is-size-7 has-text-weight-bold is-danger"
+                    onclick="adminCommand('removeQ0')">
+                    Remove all Q0 (trash)
+                </button>
+                <button style="margin:5px;" class="button is-rounded is-size-7 has-text-weight-bold is-info"
+                    onclick="adminCommand('cancel')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmRemoveNaId" class="mx-4" style="visibility:hidden; overflow:hidden; height:0; width:0;">
+        <div style="border:1px solid white; margin: 0px; padding: 25px;" class="p-2 m-2">
+            <label class="label m-0">
+                Do you really want to remove all "Not assigned"?
+            </label>
+            <div class="field is-grouped is-grouped-centered">
+                <button style="margin:5px;" class="button is-rounded is-size-7 has-text-weight-bold is-danger"
+                    onclick="adminCommand('removeNa')">
+                    Remove all "Not assigned"
+                </button>
+                <button style="margin:5px;" class="button is-rounded is-size-7 has-text-weight-bold is-info"
+                    onclick="adminCommand('cancel')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons mx-4">
+        <button id="adminDeleteNightId" onclick="adminCommand('confirmDeleteNight')"
+            class="button is-rounded is-size-7">
+            Delete monitoring night
+        </button>
+    </div>
+
+    <div id="confirmDeleteNightId" style="visibility:hidden; overflow:hidden; height:0; width:0;">
+        <div style="border:1px solid white; margin: 0px; padding: 25px;" class="p-2 m-2">
+            <label class="label m-0">
+                Do you really want to remove all recorded files in this monitoring night?
+            </label>
+            <div class="field is-grouped is-grouped-centered">
+                <button style="margin:5px;" class="button is-rounded is-size-7 has-text-weight-bold is-danger"
+                    onclick="adminCommand('deleteMonitoringNight')">
+                    Delete monitoring event/night
+                </button>
+                <button style="margin:5px;" class="button is-rounded is-size-7 has-text-weight-bold is-info"
+                    onclick="adminCommand('cancel')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p class="mx-5 my-2">
+        Reports
+    </p>
+    <div class="container">
+        <div class="buttons">
+            <button id="adminCreateReportId" onclick="adminCommand('createReport')"
+                class="button is-rounded is-size-7 ml-4">
+                Create report
+            </button>
+            <button id="adminDownloadReportId" onclick="adminCommand('createAndDownloadReport')"
+                class="button is-rounded is-size-7">
+                Create and download report
+            </button>
+        </div>
+    </div>
+</article>

@@ -1,0 +1,14 @@
+[Unit]
+Description=CloudedBats WURB-2026 Ultrasonic bat detector.  
+After=network.target
+### Before=nginx.service
+
+[Service]
+Restart=always
+TimeoutStopSec=10s
+User=wurb
+WorkingDirectory=/home/wurb/wurb_2026
+ExecStart=/home/wurb/wurb_2026/venv/bin/python3 /home/wurb/wurb_2026/wurb_main.py
+
+[Install]
+WantedBy=multi-user.target
