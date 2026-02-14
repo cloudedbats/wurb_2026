@@ -25,7 +25,7 @@ async def main():
     logger.info("")
     logger.info("Welcome to CloudedBats WURB-2026")
     logger.info("Project: https://github.com/cloudedbats/wurb_2026")
-    logger.info("================ ^ö^ =================")
+    logger.info("====================== ^ö^ ======================")
     logger.info("")
 
     try:
