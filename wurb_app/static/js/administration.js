@@ -80,7 +80,7 @@ function initLeafletMap() {
             leafletMap = new L.Map('leafletMapId');
             var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-            var osm = new L.TileLayer(osmUrl, { minZoom: 4, maxZoom: 16, attribution: osmAttrib });
+            var osm = new L.TileLayer(osmUrl, { minZoom: 4, maxZoom: 22, attribution: osmAttrib });
             leafletMap.setView(new L.LatLng(57.66194, 12.63896), 9);
             leafletMap.addLayer(osm);
 

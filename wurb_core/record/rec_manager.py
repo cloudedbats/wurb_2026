@@ -163,7 +163,7 @@ class RecManager(object):
                     location_event = wurb_core.wurb_settings.get_location_event()
                 if latlong_event.is_set():
                     latitude, longitude = wurb_core.gps_reader.get_latitude_longitude()
-                    print("Lat-long: ", latitude, "   ", longitude)
+                    # print("Lat-long: ", latitude, "   ", longitude)
                     await wurb_core.wurb_settings.save_latlong(latitude, longitude)
                     latlong_event = wurb_core.gps_reader.get_latlong_event()
 
