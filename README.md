@@ -1,4 +1,4 @@
-#  CloudedBats - WURB-2026
+# CloudedBats - WURB-2026
 
 Welcome to WURB-2026, the Do-It-Yourself ultrasonic sound detector for bat monitoring.
 
@@ -112,6 +112,9 @@ Replace other parts, marked as bold, to match your needs:
 - Keyboard: **se**
 - Activate SSH.
 
+The hostname wurb01 will be used throughout this installation guide.
+If you plan to use more than one, it's a good idea to change it.
+
 ### Installation on the Raspberry Pi.
 
 Move the micro SD card to the Raspberry Py and attach power.
@@ -207,20 +210,45 @@ Some useful commands to check attached USB devices are:
 Note that in the configuration file for the detector "wurb_settings/wurb_config.yaml"
 these USB devices are accessible and named like "media_path: /media/USB-sda1".
 
-### The Pettersson M500 mic
+## Configuration, logging and recorded files
 
-This is needed if you are planning to use the Pettersson M500 microphone,
-the one that is running at 500 kHz (not M500-384).
+There are three dirctories with useful content when using WURB-2026.
 
-    cd /home/wurb/wurb_2026
-    sudo cp raspberrypi_files/pettersson_m500_batmic.rules /etc/udev/rules.d/
-    sudo udevadm control --reload-rules
-    sudo udevadm trigger
+- **/home/wurb/wurb_settings** contains a yaml file with configuration parameters and the database used for setting.
+- **/home/wurb/wurb_logging** contains log files.
+- **/home/wurb/wurb_recordings** contains the recorded sound files.
+
+Configuration is mainly something that is loaded at startup and settings are for modifications made by the user when using the unit.
+
+If an external USB memory stick or SSD disk is attached the **wurb_recordings** directory will be placed there.
+The mount order can be modified. Check the file **wurb_settings/wurb_config.yaml** and make adjustments if needed.
+
+If the external memory unit is formatted as FAT32 it will work without any modifications.
+Be aware of the 2 TB limit for FAT32.
+
+If you want to access the directories on the Raspberry Pi from your computer, 
+SFTP clients can be used. Examples include FileZilla or WinSCP.
+Settings to be used when connecting with a SFTP client:
+
+    Protocol: SFTP
+    Port: 22 (Is default for SFTP)
+    Host: wurb01.local (Or 10.42.0.1 if you run it as a hot spot)
+    User: wurb
+    Password: your-secret-password (The same as you use for SSH)
+
+If you want to use a different type of microphone, connect it to the Raspberry Pi and start it up.
+
+In the log file "wurb_logging/wurb_debug_log.txt" there will be some
+info about connected devices that can be used in the wurb_config.yaml file.
 
 ## Executable file - Windows
 
-First step is to check that Python is installed.
-Then the WURB-2026 has to be installed.
+This instruction should be used to create a single executable file that contains
+everything needed to run the detector software.
+
+This can be done in a similar way on macOS or Linux if "venv/Script/activate"
+is replaced with "source venv/bin/activate".
+
 Dependent on how Python is installed on your computer you may have to
 type in the whole path to Python.
 
@@ -230,39 +258,23 @@ type in the whole path to Python.
     venv/Script/activate
     pip install -r requirements_pyaudio.txt
 
-The detector should now be possible to run.
-Then start a web browser with the address "<http://localhost:8080>".
+Check if it is working properly.
 
     python3 wurb_main.py
 
-To build an executable "exe" file run this.
+The detector should now be possible to run.
+Start a web browser with the address "<http://localhost:8080>".
+
+To build an executable "exe" file run this
+(still inside the wurb_2026 directory with "venv" activated).
 
     pip install pyinstaller
     pyinstaller wurb_main_pyinstaller.spec
 
 The executable file will then be created in a directory called "dist".
 
-## Configurations for the detector
-
-When the detector is started for the first time three directories will be created.
-They are **wurb_settings**, **wurb_logging** and **wurb_recordings**.
-The two first directories are located on the SD card directly under /home/wurb.
-"wurb_recordings" can be placed at some different locations depending
-on configuration settings and available attached devices for storage.
-
-Check the file **wurb_settings/wurb_config.yaml** and make adjustments if needed.
-
-If you want to use another type of microphones, then attach it to the detector
-and start the detector.
-In the log file "wurb_logging/wurb_debug_log.txt" there will be some
-info about connected devices that can be used in the wurb_config.yaml file.
-
-More info on this topic in the upcoming user manual.
-
 ## Contact
 
 Arnold Andreasson, Sweden.
 
 <info@cloudedbats.org>
-
-
