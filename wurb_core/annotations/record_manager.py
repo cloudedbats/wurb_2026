@@ -118,6 +118,10 @@ class RecordManager(object):
             night_dir = pathlib.Path(source_dir, night_id).resolve()
             if night_dir.exists():
                 for record_file in sorted(night_dir.glob("*.wav")):
+                    filename = record_file.name
+                    if (len(filename) > 0) and (filename[0] == "."):
+                        # Skip hidden files.
+                        continue
                     result.append(record_file)
         #
         return sorted(result)
@@ -129,12 +133,11 @@ class RecordManager(object):
             source_dir = pathlib.Path(self.get_source_dir(source_id)).resolve()
             night_dir = pathlib.Path(source_dir, night_id).resolve()
             if night_dir.exists():
-                recorded_files = sorted(night_dir.glob(record_id + "*.wav"))
-                # if len(recorded_files) == 1:
-                if len(recorded_files) > 0:
-                    result = recorded_files[0]
-                else:
-                    print("ERROR...")
+                for recorded_file in sorted(night_dir.glob(record_id + "*.wav")):
+                    filename = recorded_file.name
+                    if (len(filename) > 0) and (filename[0] != "."):
+                        result = recorded_file
+                        break
         #
         return result
 
