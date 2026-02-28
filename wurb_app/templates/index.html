@@ -7,33 +7,28 @@
     <title>WURB-2026</title>
 
     <!-- Bulma stylesheets: https://bulma.io/ -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-    <!-- <link rel="stylesheet" href="{{ url_for('static', path='css/bulma.min.css') }}"> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/bulma.min.css') }}">
+    <!-- Plotly. -->
+    <!-- <script src="https://cdn.plot.ly/plotly-3.3.1.min.js" charset="utf-8"></script> -->
+    <script src="{{ url_for('static', path='js/plotly-3.3.0.min.js') }}" charset="utf-8"></script>
+    <!-- Leaflet. -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /> -->
+    <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/leaflet.css') }}">
+    <script src="{{ url_for('static', path='js/leaflet.js') }}"></script>
 
-    <script src="https://cdn.plot.ly/plotly-3.3.1.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <script src="{{ url_for('static', path='js/main.js') }}"></script>
-    <script src="{{ url_for('static', path='js/record.js') }}"></script>
-    <script src="{{ url_for('static', path='js/record_client.js') }}"></script>
-    <script src="{{ url_for('static', path='js/annotations.js') }}"></script>
-    <script src="{{ url_for('static', path='js/annotations_client.js') }}"></script>
-    <script src="{{ url_for('static', path='js/administration.js') }}"></script>
-    <script src="{{ url_for('static', path='js/administration_client.js') }}"></script>
-    <script src="{{ url_for('static', path='js/mousetrap.js') }}"></script>
-    <script src="{{ url_for('static', path='js/mousetrap_bindings.js') }}"></script>
-    <!-- <script src="{{ url_for('static', path='js/main.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/record.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/record_client.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/annotations.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/annotations_client.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/administration.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/administration_client.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/mousetrap.js/?v=100') }}"></script>
-    <script src="{{ url_for('static', path='js/mousetrap_bindings.js/?v=100') }}"></script> -->
+    <script src="{{ url_for('static', path='js/main.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/record.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/record_client.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/annotations.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/annotations_client.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/administration.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/administration_client.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/mousetrap.js/?v=2026.0.0') }}"></script>
+    <script src="{{ url_for('static', path='js/mousetrap_bindings.js/?v=2026.0.0') }}"></script>
 </head>
 
 <body onLoad="fetchModules()">
