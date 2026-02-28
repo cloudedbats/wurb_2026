@@ -145,6 +145,8 @@ async function saveSettings(settingsType) {
             schedulerStopAdjust: byId("recSchedulerStopAdjustId").value,
             // schedulerPostAction: byId("recSchedulerPostActionId").value,
             // schedulerPostActionDelay: byId("recSchedulerPostActionDelayId").value,
+            useGpsTime: byId("recUseGpsTimeId").value,
+            lastGpsAtStartup: byId("recLastGpsAtStartupId").value,
         }
         await fetch(urlString,
             {

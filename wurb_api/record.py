@@ -96,6 +96,8 @@ class DetectorSettings(BaseModel):
     schedulerStopAdjust: Optional[float] = None
     # schedulerPostAction: Optional[str] = None
     # schedulerPostActionDelay: Optional[float] = None
+    useGpsTime: Optional[str] = None
+    lastGpsAtStartup: Optional[str] = None
 
 
 @record_router.post(
