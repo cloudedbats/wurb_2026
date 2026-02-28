@@ -50,21 +50,21 @@ class RecStatus(object):
                 self.logger.info(message)
 
             # Available speakers.
-            device_info = wurb_core.rec_devices.get_playback_device_info()
-            device_name = device_info.get("device_name", "")
-            sampling_freq_hz = device_info.get("sampling_freq_hz", "")
-            if device_name:
-                # Logging.
-                message = "Connected speaker: "
-                message += device_name
-                message += ". Frequency: "
-                message += str(sampling_freq_hz)
-                message += " Hz."
-                self.logger.info(message)
-            else:
-                # Logging.
-                message = "No speaker is found. "
-                self.logger.info(message)
+            # device_info = wurb_core.rec_devices.get_playback_device_info()
+            # device_name = device_info.get("device_name", "")
+            # sampling_freq_hz = device_info.get("sampling_freq_hz", "")
+            # if device_name:
+            #     # Logging.
+            #     message = "Connected speaker: "
+            #     message += device_name
+            #     message += ". Frequency: "
+            #     message += str(sampling_freq_hz)
+            #     message += " Hz."
+            #     self.logger.info(message)
+            # else:
+            #     # Logging.
+            #     message = "No speaker is found. "
+            #     self.logger.info(message)
 
             # Solartime.
             latitude, longitude = wurb_core.wurb_settings.get_valid_location()

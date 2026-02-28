@@ -94,7 +94,17 @@ class WurbSettings(object):
                 self.settings_db.set_values(identity="settings", data_dict=settings)
                 location = self.settings_db.get_values(identity="startupLocation")
                 self.settings_db.set_values(identity="location", data_dict=location)
-            # GPS.
+
+            # GPS, action for last found GPS at startup.
+            last_gps_at_startup = self.get_setting(key="lastGpsAtStartup")
+            if last_gps_at_startup == "clear":
+                location_db_dict = self.get_location_dict()
+                location_db_dict["lastGpsLatitudeDd"] = 0.0
+                location_db_dict["lastGpsLongitudeDd"] = 0.0
+                self.settings_db.set_values(
+                    identity="location", data_dict=location_db_dict
+                )
+            # Clear GPS.
             await self.save_latlong(0.0, 0.0)
         except Exception as e:
             message = "WurbSettings - startup. Exception: " + str(e)
@@ -142,6 +152,8 @@ class WurbSettings(object):
             "schedulerStopAdjust": 15,
             "schedulerPostAction": "post-none",
             "schedulerPostActionDelay": 5,
+            "useGpsTime": "use-gps-time",
+            "lastGpsAtStartup": "clear",
         }
 
     def define_default_location(self):
@@ -313,7 +325,7 @@ class WurbSettings(object):
             if geo_source in ["geo-gps", "geo-gps-or-manual", "geo-last-gps-or-manual"]:
                 location_db_dict["latitudeDd"] = latitude_dd
                 location_db_dict["longitudeDd"] = longitude_dd
-                if (latitude_dd > 0.0) and (longitude_dd > 0.0):
+                if (latitude_dd != 0.0) and (longitude_dd != 0.0):
                     location_db_dict["lastGpsLatitudeDd"] = latitude_dd
                     location_db_dict["lastGpsLongitudeDd"] = longitude_dd
             # Save.

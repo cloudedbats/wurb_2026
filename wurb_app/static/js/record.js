@@ -206,8 +206,11 @@ function updateLocation(location) {
 }
 
 function updateLatLong(latlong) {
-    byId("geoLatitudeDdId").value = latlong.latitudeDd
-    byId("geoLongitudeDdId").value = latlong.longitudeDd
+    let selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value
+    if (selectedValue != "geo-manual") {
+        byId("geoLatitudeDdId").value = latlong.latitudeDd
+        byId("geoLongitudeDdId").value = latlong.longitudeDd
+    }
 }
 
 function updateSettings(settings) {
@@ -230,6 +233,8 @@ function updateSettings(settings) {
     byId("recSchedulerStopAdjustId").value = settings.schedulerStopAdjust
     // byId("recSchedulerPostActionId").value = settings.schedulerPostAction
     // byId("recSchedulerPostActionDelayId").value = settings.schedulerPostActionDelay
+    byId("recUseGpsTimeId").value = settings.useGpsTime
+    byId("recLastGpsAtStartupId").value = settings.lastGpsAtStartup
 
     modeSelectOnChange(updateDetector = false)
 }
