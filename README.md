@@ -203,6 +203,10 @@ Use different names to avoid conflicts if there are more detectors within range.
     sudo nmcli con add con-name wurb-hotspot ifname wlan0 type wifi ssid WiFi-wurb01
     sudo nmcli con modify wurb-hotspot wifi-sec.key-mgmt wpa-psk
     sudo nmcli con modify wurb-hotspot wifi-sec.psk chiroptera
+    # Define security protocol, etc.
+    sudo nmcli con modify wurb-hotspot wifi-sec.proto rsn
+    sudo nmcli con modify wurb-hotspot wifi-sec.pairwise ccmp
+    sudo nmcli con modify wurb-hotspot wifi-sec.group ccmp
     sudo nmcli con modify wurb-hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
 
 ### Connect to other WiFi networks, etc.
