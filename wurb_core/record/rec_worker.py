@@ -46,6 +46,10 @@ class RecWorker(object):
         self.connected_input_channels = ""
         self.config_input_channels = ""
         self.connected_sampling_freq_hz = ""
+        #
+        self.mic_read_size_mbit = self.config.get(
+            "rec_manager.mic_read_size_mbit", 4
+        )
 
     def start_recording(self):
         """ """
@@ -136,8 +140,9 @@ class RecWorker(object):
             # Set up microphone.
             # Process buffer 0.25 sec.
             process_buffer_size = int(float(self.connected_sampling_freq_hz) / 4)
-            # frames_per_buffer = int(float(self.connected_sampling_freq_hz) / 8)
-            frames_per_buffer = int(1024.0 * 4)
+            # Increase mic_read_size_mbit if frames are dropped. 
+            frames_per_buffer = int(1024.0 * self.mic_read_size_mbit)
+
             if self.connected_device_name == "Pettersson M500 (500kHz)":
                 wurb_core.m500.setup(
                     device_index=self.connected_device_index,

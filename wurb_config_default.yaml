@@ -97,6 +97,7 @@ gps_reader:
 
 rec_manager:
   control_loop_interval_s: 10
+  mic_read_size_mbit: 4
 
 wurb_logger:
   max_client_messages: 50

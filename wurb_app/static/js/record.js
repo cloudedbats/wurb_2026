@@ -219,7 +219,7 @@ function updateSettings(settings) {
 
     byId("recModeSelectId").value = settings.recMode
     byId("recFileDirectoryId").value = settings.fileDirectory
-    // byId("recFileDirectoryDateOptionId").value = settings.fileDirectoryDateOption
+    byId("recFileDirectoryDateOptionId").value = settings.fileDirectoryDateOption
     byId("recFilenamePrefixId").value = settings.filenamePrefix
     byId("recDetectionLimitId").value = settings.detectionLimitKhz
     byId("recDetectionSensitivityId").value = settings.detectionSensitivityDbfs

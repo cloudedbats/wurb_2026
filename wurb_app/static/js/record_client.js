@@ -131,7 +131,7 @@ async function saveSettings(settingsType) {
         let settings = {
             recMode: byId("recModeSelectId").value,
             fileDirectory: byId("recFileDirectoryId").value,
-            // fileDirectoryDateOption: byId("recFileDirectoryDateOptionId").value,
+            fileDirectoryDateOption: byId("recFileDirectoryDateOptionId").value,
             filenamePrefix: byId("recFilenamePrefixId").value,
             detectionLimitKhz: byId("recDetectionLimitId").value,
             detectionSensitivityDbfs: byId("recDetectionSensitivityId").value,
