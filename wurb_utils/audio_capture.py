@@ -165,7 +165,7 @@ class AudioCapture:
                 # device="Pettersson",
                 device=self.device_index,
                 dtype="int16",
-                # latency="high",
+                latency="high",
                 # **kwargs,
             )
 
@@ -185,7 +185,10 @@ class AudioCapture:
                         await input_stream_queue.get()
                     )
 
-                    print("CAPTURE: Frame count: ", frame_count)
+                    if status:
+                        self.logger.debug("AudioCapture - Status: " + status)
+
+                    # print("CAPTURE: Frame count: ", frame_count)
 
                     # Convert stereo to mono by using either left or right channel.
                     if self.config_channels in ["MONO-LEFT", "MONO-RIGHT"]:
