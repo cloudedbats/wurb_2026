@@ -302,7 +302,7 @@ specify the full path to Python.
     cd wurb_2026/
     python3 -m venv venv
     venv\Scripts\activate
-    pip install -r requirements_pyaudio.txt
+    pip install -r requirements.txt
 
 Check if it works correctly.
 

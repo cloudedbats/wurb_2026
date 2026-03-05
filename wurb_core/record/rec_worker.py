@@ -47,9 +47,7 @@ class RecWorker(object):
         self.config_input_channels = ""
         self.connected_sampling_freq_hz = ""
         #
-        self.mic_read_size_mbit = self.config.get(
-            "rec_manager.mic_read_size_mbit", 4
-        )
+        self.mic_read_buffer_s = self.config.get("rec_manager.mic_read_buffer_s", 0.01)
 
     def start_recording(self):
         """ """
@@ -140,8 +138,10 @@ class RecWorker(object):
             # Set up microphone.
             # Process buffer 0.25 sec.
             process_buffer_size = int(float(self.connected_sampling_freq_hz) / 4)
-            # Increase mic_read_size_mbit if frames are dropped. 
-            frames_per_buffer = int(1024.0 * self.mic_read_size_mbit)
+            # Increase mic_read_buffer_s if frames are dropped.
+            mic_read_buffer_size = int(
+                self.connected_sampling_freq_hz * self.mic_read_buffer_s
+            )
 
             if self.connected_device_name == "Pettersson M500 (500kHz)":
                 wurb_core.m500.setup(
@@ -150,8 +150,8 @@ class RecWorker(object):
                     channels=self.connected_input_channels,
                     config_channels=self.connected_config_channels,
                     sampling_freq_hz=int(self.connected_sampling_freq_hz),
-                    frames_per_buffer=frames_per_buffer,
-                    buffer_size=process_buffer_size,
+                    # mic_read_buffer_size=mic_read_buffer_size,
+                    mic_out_buffer_size=process_buffer_size,
                 )
             else:
                 wurb_core.audio_capture.setup(
@@ -160,14 +160,14 @@ class RecWorker(object):
                     channels=self.connected_input_channels,
                     config_channels=self.connected_config_channels,
                     sampling_freq_hz=int(self.connected_sampling_freq_hz),
-                    frames_per_buffer=frames_per_buffer,
-                    buffer_size=process_buffer_size,
+                    mic_read_buffer_size=mic_read_buffer_size,
+                    mic_out_buffer_size=process_buffer_size,
                 )
 
             if self.connected_device_name == "Pettersson M500 (500kHz)":
                 await wurb_core.m500.start()
             else:
-                await wurb_core.audio_capture.start()                
+                await wurb_core.audio_capture.start()
             self.logger.debug("RecWorker - Sound capture started.")
         except Exception as e:
             message = "RecWorker - rec_source_worker. Exception: " + str(e)
@@ -216,14 +216,8 @@ class RecWorker(object):
                             self.logger.warning(message)
                             # Check connected microphones.
                             wurb_core.rec_devices.clear()
-                            # PyAudio has to be terminated and reloaded.
-                            # wurb_core.audio.terminate()
-                            # wurb_core.audio = wurb_core.pyaudio.PyAudio()
-
 
                             # wurb_core.audio_capture = wurb_utils.AudioCapture(wurb_core.audio, logger_name=wurb_core.logger_name)
-                            # wurb_core.audio_playback = wurb_utils.AudioPlayback(wurb_core.audio, logger_name=wurb_core.logger_name)
-
 
                             wurb_core.rec_devices.get_capture_device_info()
                             # Restart recording.
@@ -352,9 +346,9 @@ class RecWorker(object):
                                             if index == 0:
                                                 to_file_item["status"] = "new_file"
                                                 to_file_item["peak_hz"] = max_peak_hz
-                                                to_file_item[
-                                                    "peak_dbfs"
-                                                ] = max_peak_dbfs
+                                                to_file_item["peak_dbfs"] = (
+                                                    max_peak_dbfs
+                                                )
                                             if index == (self.process_deque_length - 1):
                                                 to_file_item["status"] = "close_file"
                                             #

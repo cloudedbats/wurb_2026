@@ -193,7 +193,7 @@ async def get_spectrogram(
             pass  # Return the smallest image.
         else:
             # Example: "<img src='data:image/png;base64,{buffer}'/>"
-            buffer = wurb_core.spectrogram.create_spectrogram(spectrogram_path)
+            buffer = await wurb_core.spectrogram.create_spectrogram(spectrogram_path)
             if buffer is None:
                 pass  # Return the smallest image.
             else:

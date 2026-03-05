@@ -24,7 +24,6 @@ config_dir = pathlib.Path(executable_path.parent, "wurb_settings")
 config_file = "wurb_config.yaml"
 config_default_file = pathlib.Path(workdir_path, "wurb_config_default.yaml")
 
-# import pyaudio
 import wurb_utils
 
 from wurb_core.common.wurb_logger import WurbLogger
@@ -69,9 +68,6 @@ wurb_manager = WurbManager(config, wurb_logger)
 
 # Audio.
 sound_pitch_shifting = wurb_utils.SoundPitchShifting(logger_name=logger_name)
-# audio = pyaudio.PyAudio()  # Only one instance allowed.
-# audio_capture = wurb_utils.AudioCapture(audio, logger_name=logger_name)
-# audio_playback = wurb_utils.AudioPlayback(audio, logger_name=logger_name)
 audio_capture = wurb_utils.AudioCapture(logger_name=logger_name)
 # Pettersson M500.
 m500 = wurb_utils.PetterssonM500(logger_name=logger_name)

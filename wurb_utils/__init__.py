@@ -7,7 +7,6 @@ from wurb_utils.configuration import Configuration
 
 from wurb_utils.audio_capture import AudioCapture
 from wurb_utils.sound_pitchshifting import SoundPitchShifting
-# from wurb_utils.audio_playback import AudioPlayback
 
 from wurb_utils.pettersson_m500 import PetterssonM500
 from wurb_utils.pettersson_m500_batmic import PetterssonM500BatMic

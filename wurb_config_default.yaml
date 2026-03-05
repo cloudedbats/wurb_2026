@@ -97,23 +97,7 @@ gps_reader:
 
 rec_manager:
   control_loop_interval_s: 10
-  mic_read_size_mbit: 4
+  mic_read_buffer_s: 0.01
 
 wurb_logger:
   max_client_messages: 50
-
-audio_playback:
-  - device_name: headphones
-    sampling_freq_hz: 48000
-    period_size: 2048
-    buffer_size: 4800
-    buffer_max_size: 10000
-    in_queue_length: 10
-
-audio_playback_pitch_shifting:
-  pitch_factor: 30
-  volume_percent: 50
-  filter_low_khz: 15.0
-  filter_high_khz: 90.0
-  in_queue_length: 10
-  overlap_factor: 1.5
