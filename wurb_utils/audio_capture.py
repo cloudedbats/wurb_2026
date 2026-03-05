@@ -25,8 +25,8 @@ class AudioCapture:
         self.channels = None
         self.config_channels = None
         self.sampling_freq_hz = None
-        self.frames_per_buffer = None
-        self.buffer_size = None
+        self.mic_read_buffer_size = None
+        self.mic_out_buffer_size = None
         #
         self.out_queue_list = []
         self.main_loop = None
@@ -85,8 +85,8 @@ class AudioCapture:
         channels,
         config_channels,
         sampling_freq_hz,
-        frames_per_buffer,
-        buffer_size,
+        mic_read_buffer_size,
+        mic_out_buffer_size,
     ):
         """ """
         self.device_index = device_index
@@ -94,8 +94,8 @@ class AudioCapture:
         self.channels = channels
         self.config_channels = config_channels
         self.sampling_freq_hz = sampling_freq_hz
-        self.frames_per_buffer = frames_per_buffer
-        self.buffer_size = buffer_size
+        self.mic_read_buffer_size = mic_read_buffer_size
+        self.mic_out_buffer_size = mic_out_buffer_size
 
     def add_out_queue(self, out_queue):
         """ """
@@ -124,7 +124,7 @@ class AudioCapture:
                 self.run_capture(), name="Sound capture task"
             )
         except Exception as e:
-            message = "AlsaAudioPlayback - start. Exception: " + str(e)
+            message = "AudioCapture - start. Exception: " + str(e)
             self.logger.debug(message)
 
     async def stop(self):
@@ -135,7 +135,7 @@ class AudioCapture:
                 self.capture_executor.cancel()
                 self.capture_executor = None
         except Exception as e:
-            message = "AlsaAudioPlayback - stop. Exception: " + str(e)
+            message = "AudioCapture - stop. Exception: " + str(e)
             self.logger.debug(message)
 
     async def run_capture(self):
@@ -145,13 +145,19 @@ class AudioCapture:
         try:
             self.logger.debug("AudioCapture - Sound capture started.")
 
-            # input_stream_queue = asyncio.Queue()
-            input_stream_list = []
-            loop = asyncio.get_event_loop()
+            column_index = 0 # For mono.
+            # Convert stereo to mono by using either left or right channel.
+            if self.config_channels.upper() == "MONO-LEFT":
+                column_index = 0
+            if self.config_channels.upper() == "MONO-RIGHT":
+                column_index = 1
 
-            def callback(in_data, frame_count, time_info, status):
+            # List used as buffer.
+            input_stream_list = []
+
+            def input_stream_callback(in_data, frame_count, time_info, status):
                 # Callback from sounddevice.InputStream.
-                in_buffer = in_data[:, 0].copy()
+                in_buffer = in_data[:, column_index].copy()
                 callback_list = [
                     in_buffer,
                     frame_count,
@@ -161,8 +167,8 @@ class AudioCapture:
                 input_stream_list.append(callback_list)
 
             stream = sounddevice.InputStream(
-                callback=callback,
-                blocksize=self.frames_per_buffer,
+                callback=input_stream_callback,
+                blocksize=self.mic_read_buffer_size,
                 samplerate=self.sampling_freq_hz,
                 channels=self.channels,
                 device=self.device_index,
@@ -172,7 +178,7 @@ class AudioCapture:
             self.capture_is_running = True
             # Time related.
             calculated_time_s = time.time()
-            time_increment_s = self.buffer_size / self.sampling_freq_hz
+            time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
             # Empty numpy buffer.
             in_buffer_int16 = numpy.array([], dtype=numpy.int16)
             #
@@ -180,7 +186,7 @@ class AudioCapture:
             #
             with stream:
                 while self.capture_is_active:
-                    
+
                     if len(input_stream_list) <= 0:
                         await asyncio.sleep(0.01)
                         continue
@@ -196,28 +202,22 @@ class AudioCapture:
                         self.logger.debug("AudioCapture - Status: " + str(status))
 
                     if len(input_stream_list) > 5:
-                        print("CAPTURE: Frame count: ", frame_count, " List length: ", len(input_stream_list))
+                        print(
+                            "CAPTURE: Frame count: ",
+                            frame_count,
+                            " List length: ",
+                            len(input_stream_list),
+                        )
                     # print("CAPTURE: AdcTime: ", time_info.inputBufferAdcTime)
                     # print("CAPTURE: currentTime: ", time_info.currentTime)
                     # print("CAPTURE: time.time(): ", time.time())
 
-                    # # Convert stereo to mono by using either left or right channel.
-                    # if self.config_channels in ["MONO-LEFT", "MONO-RIGHT"]:
-                    #     if self.config_channels.upper() == "MONO-LEFT":
-                    #         in_data_int16 = callback_dict.in_data[0::2].copy()
-                    #     if self.config_channels.upper() == "MONO-RIGHT":
-                    #         in_data_int16 = callback_dict.in_data[1::2].copy()
-                    # else:
-                    #     in_data_int16 = callback_dict.in_data[:, 0]
-
-                    # # Concatenate
-                    in_buffer_int16 = numpy.concatenate(
-                        (in_buffer_int16, in_buffer)
-                    )
-                    while len(in_buffer_int16) >= self.buffer_size:
-                        # Copy "buffer_size" part and save remaining part.
-                        data_int16 = in_buffer_int16[0 : self.buffer_size]
-                        in_buffer_int16 = in_buffer_int16[self.buffer_size :]
+                    # Concatenate
+                    in_buffer_int16 = numpy.concatenate((in_buffer_int16, in_buffer))
+                    while len(in_buffer_int16) >= self.mic_out_buffer_size:
+                        # Copy "mic_out_buffer_size" part and save remaining part.
+                        data_int16 = in_buffer_int16[0 : self.mic_out_buffer_size]
+                        in_buffer_int16 = in_buffer_int16[self.mic_out_buffer_size :]
 
                         # Put data on queues in the queue list.
                         for data_queue in self.out_queue_list:
@@ -265,126 +265,4 @@ class AudioCapture:
         finally:
             self.logger.debug("AudioCapture - Capture ended.")
             self.capture_is_active = False
-            # if stream:
-            #     stream.close()
             self.capture_is_running = False
-
-    # async def run_capture(self):
-    #     """ """
-    #     stream = None
-    #     self.capture_is_active = True
-    #     try:
-    #         self.logger.debug("AudioCapture - Sound capture started.")
-
-    #         input_stream_queue = asyncio.Queue()
-    #         loop = asyncio.get_event_loop()
-
-    #         def callback(in_data, frame_count, time_info, status):
-    #             loop.call_soon_threadsafe(
-    #                 input_stream_queue.put_nowait,
-    #                 (
-    #                     in_data.copy(),
-    #                     frame_count,
-    #                     time_info,
-    #                     status,
-    #                 ),
-    #             )
-
-    #         stream = sounddevice.InputStream(
-    #             callback=callback,
-    #             blocksize=self.frames_per_buffer,
-    #             samplerate=self.sampling_freq_hz,
-    #             channels=self.channels,
-    #             device=self.device_index,
-    #             dtype="int16",
-    #         )
-
-    #         self.capture_is_running = True
-    #         # Time related.
-    #         calculated_time_s = time.time()
-    #         time_increment_s = self.buffer_size / self.sampling_freq_hz
-    #         # Empty numpy buffer.
-    #         in_buffer_int16 = numpy.array([], dtype=numpy.int16)
-    #         #
-    #         await asyncio.sleep(0)
-    #         #
-    #         with stream:
-    #             while self.capture_is_active:
-
-    #                 in_data, frame_count, time_info, status = (
-    #                     await input_stream_queue.get()
-    #                 )
-
-    #                 if status:
-    #                     self.logger.debug("AudioCapture - Status: " + str(status))
-
-    #                 # print("CAPTURE: Frame count: ", frame_count)
-    #                 print("CAPTURE: AdcTime: ", time_info.inputBufferAdcTime)
-    #                 print("CAPTURE: currentTime: ", time_info.currentTime)
-    #                 print("CAPTURE: time.time(): ", time.time())
-
-    #                 # Convert stereo to mono by using either left or right channel.
-    #                 if self.config_channels in ["MONO-LEFT", "MONO-RIGHT"]:
-    #                     if self.config_channels.upper() == "MONO-LEFT":
-    #                         in_data_int16 = in_data[0::2].copy()
-    #                     if self.config_channels.upper() == "MONO-RIGHT":
-    #                         in_data_int16 = in_data[1::2].copy()
-    #                 else:
-    #                     in_data_int16 = in_data[:, 0]
-    #                 # Concatenate
-    #                 in_buffer_int16 = numpy.concatenate(
-    #                     (in_buffer_int16, in_data_int16)
-    #                 )
-    #                 while len(in_buffer_int16) >= self.buffer_size:
-    #                     # Copy "buffer_size" part and save remaining part.
-    #                     data_int16 = in_buffer_int16[0 : self.buffer_size]
-    #                     in_buffer_int16 = in_buffer_int16[self.buffer_size :]
-
-    #                     # Put data on queues in the queue list.
-    #                     for data_queue in self.out_queue_list:
-    #                         # Time rounded to half sec.
-    #                         calculated_time_s += time_increment_s
-    #                         device_time = int((calculated_time_s) * 2) / 2
-    #                         # Used to detect time drift.
-    #                         detector_time = time.time()
-    #                         # Copy data.
-    #                         data_int16_copy = data_int16.copy()
-    #                         # Put together.
-    #                         data_dict = {
-    #                             "status": "data",
-    #                             "adc_time": device_time,
-    #                             "detector_time": detector_time,
-    #                             "data": data_int16_copy,
-    #                         }
-    #                         try:
-    #                             if not data_queue.full():
-    #                                 self.main_loop.call_soon_threadsafe(
-    #                                     data_queue.put_nowait, data_dict
-    #                                 )
-    #                             else:
-    #                                 self.logger.debug("AudioCapture - Queue full.")
-    #                         #
-    #                         except Exception as e:
-    #                             message = (
-    #                                 "AudioCapture - Failed to put captured sound on queue: "
-    #                                 + str(e)
-    #                             )
-    #                             self.logger.error(message)
-    #                             if not self.main_loop.is_running():
-    #                                 # Terminate.
-    #                                 self.capture_is_active = False
-    #                                 break
-    #                 #
-    #                 await asyncio.sleep(0)
-    #     #
-    #     except asyncio.CancelledError:
-    #         self.logger.debug("AudioCapture - Was cancelled.")
-    #     except Exception as e:
-    #         message = "AudioCapture - run_capture. Exception: " + str(e)
-    #         self.logger.debug(message)
-    #     finally:
-    #         self.logger.debug("AudioCapture - Capture ended.")
-    #         self.capture_is_active = False
-    #         # if stream:
-    #         #     stream.close()
-    #         self.capture_is_running = False

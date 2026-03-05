@@ -35,8 +35,8 @@ class PetterssonM500:
         self.config_channels = "MONO"
         self.sampling_freq_hz = 500000
         #
-        self.frames_per_buffer = None
-        self.buffer_size = None
+        self.mic_read_buffer_size = None
+        self.mic_out_buffer_size = None
         #
         self.out_queue_list = []
         self.main_loop = None
@@ -50,7 +50,6 @@ class PetterssonM500:
             return False
         #
         return self.pettersson_m500.is_available()
-
 
     def is_capture_running(self):
         """ """
@@ -73,8 +72,8 @@ class PetterssonM500:
         channels,
         config_channels,
         sampling_freq_hz,
-        frames_per_buffer,
-        buffer_size,
+        mic_read_buffer_size,
+        mic_out_buffer_size,
     ):
         """ """
         # Should not be changed.
@@ -83,8 +82,8 @@ class PetterssonM500:
         # self.channels = channels
         # self.config_channels = config_channels
         # self.sampling_freq_hz = sampling_freq_hz
-        self.frames_per_buffer = frames_per_buffer
-        self.buffer_size = buffer_size
+        self.mic_read_buffer_size = mic_read_buffer_size
+        self.mic_out_buffer_size = mic_out_buffer_size
 
     def add_out_queue(self, out_queue):
         """ """
@@ -147,7 +146,7 @@ class PetterssonM500:
             self.capture_is_running = True
             # Time related.
             calculated_time_s = time.time()
-            time_increment_s = self.buffer_size / self.sampling_freq_hz
+            time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
             # Empty numpy buffer.
             in_buffer_int16 = numpy.array([], dtype=numpy.int16)
             # Loop.
@@ -161,10 +160,10 @@ class PetterssonM500:
                     in_buffer_int16 = numpy.concatenate(
                         (in_buffer_int16, in_data_int16)
                     )
-                    while len(in_buffer_int16) >= self.buffer_size:
-                        # Copy "buffer_size" part and save remaining part.
-                        data_int16 = in_buffer_int16[0 : self.buffer_size]
-                        in_buffer_int16 = in_buffer_int16[self.buffer_size :]
+                    while len(in_buffer_int16) >= self.mic_out_buffer_size:
+                        # Copy "mic_out_buffer_size" part and save remaining part.
+                        data_int16 = in_buffer_int16[0 : self.mic_out_buffer_size]
+                        in_buffer_int16 = in_buffer_int16[self.mic_out_buffer_size :]
 
                         # Put data on queues in the queue list.
                         for data_queue in self.out_queue_list:
