@@ -216,9 +216,6 @@ class RecWorker(object):
                             self.logger.warning(message)
                             # Check connected microphones.
                             wurb_core.rec_devices.clear()
-                            # PyAudio has to be terminated and reloaded.
-                            # wurb_core.audio.terminate()
-                            # wurb_core.audio = wurb_core.pyaudio.PyAudio()
 
                             # wurb_core.audio_capture = wurb_utils.AudioCapture(wurb_core.audio, logger_name=wurb_core.logger_name)
 

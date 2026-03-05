@@ -9,7 +9,6 @@ aiofiles
 websockets
 requests
 # Audio.
-pyaudio
 sounddevice
 # Calculations.
 numpy

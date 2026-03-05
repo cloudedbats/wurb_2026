@@ -24,7 +24,6 @@ config_dir = pathlib.Path(executable_path.parent, "wurb_settings")
 config_file = "wurb_config.yaml"
 config_default_file = pathlib.Path(workdir_path, "wurb_config_default.yaml")
 
-# import pyaudio
 import wurb_utils
 
 from wurb_core.common.wurb_logger import WurbLogger
