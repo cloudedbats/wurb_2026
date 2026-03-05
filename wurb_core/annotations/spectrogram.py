@@ -4,6 +4,7 @@
 # Author: Arnold Andreasson, info@cloudedbats.org
 # License: MIT License (see LICENSE or http://opensource.org/licenses/mit).
 
+import asyncio
 import pathlib
 import logging
 import matplotlib
@@ -46,7 +47,7 @@ class SpectrogramCreator(object):
     def configure(self):
         """ """
 
-    def create_spectrogram(self, source_path):
+    async def create_spectrogram(self, source_path):
         """ """
         if self.is_running is True:
             message = "SpectrogramCreator - Not executed, already running. "
@@ -69,6 +70,8 @@ class SpectrogramCreator(object):
                 if sample_rate < 90000:
                     sample_rate *= 10
 
+                await asyncio.sleep(0)
+
                 # start_ix = int(sample_rate * 4.7)
                 # end_ix = int(sample_rate * 4.9)
                 # start_ix = int(sample_rate * 2.0)
@@ -83,6 +86,8 @@ class SpectrogramCreator(object):
                 sample_rate = int(sample_rate / pitch_factor)
                 if ps_samples is None:
                     return None
+
+                await asyncio.sleep(0)
 
                 # wavfile.write("test_pitch.wav", sample_rate, ps_samples)
 
@@ -104,6 +109,8 @@ class SpectrogramCreator(object):
                 # Fix colors, use logarithmic scale.
                 for row in spectrogram:
                     row[row < 0.0002] = None
+
+                await asyncio.sleep(0)
 
                 ax1.grid(False)
                 spectrogram_log10 = numpy.log10(spectrogram)
@@ -132,6 +139,8 @@ class SpectrogramCreator(object):
                 # name = pathlib.Path(source_path).name
                 # figure.savefig(name.replace("wav", "png"))
                 figure.savefig(buf, format="png")
+
+                await asyncio.sleep(0)
 
                 # # buffer = base64.b64encode(buf.getbuffer()).decode("ascii")
                 buffer = pybase64.b64encode(buf.getbuffer()).decode("ascii")

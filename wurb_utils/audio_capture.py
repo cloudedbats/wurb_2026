@@ -145,7 +145,7 @@ class AudioCapture:
         try:
             self.logger.debug("AudioCapture - Sound capture started.")
 
-            column_index = 0 # For mono.
+            column_index = 0  # For mono.
             # Convert stereo to mono by using either left or right channel.
             if self.config_channels.upper() == "MONO-LEFT":
                 column_index = 0
@@ -201,13 +201,13 @@ class AudioCapture:
                     if status:
                         self.logger.debug("AudioCapture - Status: " + str(status))
 
-                    if len(input_stream_list) > 5:
-                        print(
-                            "CAPTURE: Frame count: ",
-                            frame_count,
-                            " List length: ",
-                            len(input_stream_list),
-                        )
+                    # if len(input_stream_list) > 5:
+                    #     print(
+                    #         "CAPTURE: Frame count: ",
+                    #         frame_count,
+                    #         " List length: ",
+                    #         len(input_stream_list),
+                    #     )
                     # print("CAPTURE: AdcTime: ", time_info.inputBufferAdcTime)
                     # print("CAPTURE: currentTime: ", time_info.currentTime)
                     # print("CAPTURE: time.time(): ", time.time())
