@@ -50,7 +50,7 @@ function initActivityPlot() {
         }
     } catch (err) {
         activityPlot = false;
-        alert("ERROR initLeafletMap: " + err);
+        alert("ERROR initActivityPlot: " + err);
         console.log(err);
     };
 }
@@ -81,7 +81,9 @@ function initLeafletMap() {
             var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
             var osm = new L.TileLayer(osmUrl, { minZoom: 4, maxZoom: 22, attribution: osmAttrib });
-            leafletMap.setView(new L.LatLng(57.66194, 12.63896), 9);
+            var zoom_level = 7;
+            leafletMap.setView(new L.LatLng(defaultLatitude, defaultLongitude), zoom_level);
+
             leafletMap.addLayer(osm);
 
             leafletMarkers = L.layerGroup();
@@ -108,26 +110,42 @@ function updateMap() {
             console.log(err);
         };
     }
-    // Default position.
-    var meanLat = 59.767825
-    var meanLong = 14.803527
-    // Calculate mean values for center position.
+    // Calculate and move to center position.
+    var sumLat = 0.0;
+    var sumLong = 0.0;
+    var counterLat = 0;
+    var counterLong = 0;
+    var meanLat = defaultLatitude;
+    var meanLong = defaultLongitude;
     if (arrayLength > 0) {
-        var sumLat = 0;
         for (let value of mapLatitudeArray) {
-            sumLat += value;
+            // Prefer true GPS values.
+            if ((value != 0.0) || (value != defaultLatitude)) {
+                sumLat += value;
+                counterLat += 1;
+            }
         }
-        meanLat = sumLat / arrayLength;
-        var sumLong = 0;
+        if (counterLat > 0) {
+            meanLat = sumLat / counterLat;
+        }
         for (let value of mapLongitudeArray) {
-            sumLong += value;
+            // Prefer true GPS values.
+            if ((value != 0.0) || (value != defaultLongitude)) {
+                sumLong += value;
+                counterLong += 1;
+            }
         }
-        meanLong = sumLong / arrayLength;
+        if (counterLong > 0) {
+            meanLong = sumLong / counterLong;
+        }
     }
     leafletMap.flyTo(new L.LatLng(meanLat, meanLong));
 }
 
 function clearMapContent() {
+    mapLatitudeArray = [];
+    mapLongitudeArray = [];
+    updateMap();
 
 }
 

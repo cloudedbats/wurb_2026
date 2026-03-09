@@ -1,8 +1,8 @@
 
-var activityPlotArray = []
-var activityPlotDateTime = []
-var mapLatitudeArray = []
-var mapLongitudeArray = []
+var activityPlotArray = [];
+var activityPlotDateTime = [];
+var mapLatitudeArray = [];
+var mapLongitudeArray = [];
 
 async function getAdminSourceDirs() {
     // fetch("/module-admin/get-rec-sources", { method: "GET" })
@@ -199,7 +199,7 @@ async function getRecordingsData(sourceId, nightId) {
         .catch(function (err) {
             console.warn("Error in javascript fetch: ", err);
         })
-}
+};
 
 async function adminExecuteCommand(sourceId, nightId, command) {
     fetch("/administration/command?" + new URLSearchParams({

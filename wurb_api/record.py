@@ -70,8 +70,8 @@ class LocationSettings(BaseModel):
     geoSource: Optional[str] = None
     latitudeDd: Optional[float] = None
     longitudeDd: Optional[float] = None
-    manualLatitudeDd: Optional[float] = None
-    manualLongitudeDd: Optional[float] = None
+    defaultLatitudeDd: Optional[float] = None
+    defaultLongitudeDd: Optional[float] = None
 
 
 class DetectorSettings(BaseModel):

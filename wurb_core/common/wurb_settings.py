@@ -159,11 +159,11 @@ class WurbSettings(object):
     def define_default_location(self):
         """ """
         self.default_location = {
-            "geoSource": "geo-not-used",
+            "geoSource": "geo-default",
             "latitudeDd": 0.0,
             "longitudeDd": 0.0,
-            "manualLatitudeDd": 0.0,
-            "manualLongitudeDd": 0.0,
+            "defaultLatitudeDd": 0.0,
+            "defaultLongitudeDd": 0.0,
             "lastGpsLatitudeDd": 0.0,
             "lastGpsLongitudeDd": 0.0,
         }
@@ -301,11 +301,11 @@ class WurbSettings(object):
 
             geo_source = location_db_dict["geoSource"]
             # Manual.
-            if geo_source == "geo-manual":
-                location_db_dict["latitudeDd"] = location_db_dict["manualLatitudeDd"]
-                location_db_dict["longitudeDd"] = location_db_dict["manualLongitudeDd"]
+            if geo_source == "geo-default":
+                location_db_dict["latitudeDd"] = location_db_dict["defaultLatitudeDd"]
+                location_db_dict["longitudeDd"] = location_db_dict["defaultLongitudeDd"]
             # GPS.
-            if geo_source in ["geo-gps", "geo-gps-or-manual", "geo-last-gps-or-manual"]:
+            if geo_source in ["geo-gps", "geo-gps-or-last-found"]:
                 location_db_dict["latitudeDd"] = 0.0
                 location_db_dict["longitudeDd"] = 0.0
             # Save.
@@ -322,7 +322,7 @@ class WurbSettings(object):
             location_db_dict = self.get_location_dict()
             geo_source = location_db_dict.get("geoSource", "")
             # If GPS.
-            if geo_source in ["geo-gps", "geo-gps-or-manual", "geo-last-gps-or-manual"]:
+            if geo_source in ["geo-gps", "geo-gps-or-last-found"]:
                 location_db_dict["latitudeDd"] = latitude_dd
                 location_db_dict["longitudeDd"] = longitude_dd
                 if (latitude_dd != 0.0) and (longitude_dd != 0.0):
@@ -336,6 +336,15 @@ class WurbSettings(object):
             message = "WurbSettings - save_latlong. Exception: " + str(e)
             self.logger.debug(message)
 
+    def get_default_location(self):
+        """ """
+        latitude = 0.0
+        longitude = 0.0
+        location_dict = self.get_location_dict()
+        default_latitude = float(location_dict.get("defaultLatitudeDd", "0.0"))
+        default_longitude = float(location_dict.get("defaultLongitudeDd", "0.0"))
+        return default_latitude, default_longitude
+
     def get_valid_location(self):
         """ """
         latitude = 0.0
@@ -343,27 +352,34 @@ class WurbSettings(object):
         location_dict = self.get_location_dict()
         latitude = float(location_dict.get("latitudeDd", "0.0"))
         longitude = float(location_dict.get("longitudeDd", "0.0"))
-        manual_latitude = float(location_dict.get("manualLatitudeDd", "0.0"))
-        manual_longitude = float(location_dict.get("manualLongitudeDd", "0.0"))
+        default_latitude = float(location_dict.get("defaultLatitudeDd", "0.0"))
+        default_longitude = float(location_dict.get("defaultLongitudeDd", "0.0"))
         last_gps_latitude = float(location_dict.get("lastGpsLatitudeDd", "0.0"))
         last_gps_longitude = float(location_dict.get("lastGpsLongitudeDd", "0.0"))
         geo_source = location_dict.get("geoSource", "")
         if (latitude == 0.0) or (longitude == 0.0):
-            if geo_source in ["geo-gps-or-manual"]:
-                latitude = manual_latitude
-                longitude = manual_longitude
+            if geo_source in ["geo-gps"]:
+                latitude = default_latitude
+                longitude = default_longitude
         if (latitude == 0.0) or (longitude == 0.0):
-            if geo_source in ["geo-last-gps-or-manual"]:
+            if geo_source in ["geo-gps-or-last-found"]:
                 latitude = last_gps_latitude
                 longitude = last_gps_longitude
                 if (latitude == 0.0) or (longitude == 0.0):
-                    latitude = manual_latitude
-                    longitude = manual_longitude
+                    latitude = default_latitude
+                    longitude = default_longitude
         # Result.
         return latitude, longitude
 
     def get_location_status(self):
         """ """
+        lat, long = self.get_default_location()
+        if (lat == 0.0) and (long == 0.0):
+            result = "Default position is not set."
+            result += "<br>"
+            result += "Will affect the scheduler."
+            return result
+
         lat, long = self.get_valid_location()
         if (lat == 0.0) and (long == 0.0):
             return "Not valid. Scheduler not started."
@@ -372,7 +388,10 @@ class WurbSettings(object):
             if geo_source == "geo-gps":
                 if wurb_core.gps_reader:
                     no_of_satellites = wurb_core.gps_reader.get_number_of_satellites()
-                    return "Number of satellites: " + str(no_of_satellites)
+                    result = "Lat: " + str(lat) + " Long: " + str(long)
+                    result += "<br>"
+                    result += "Number of satellites: " + str(no_of_satellites)
+                    return result
             else:
                 return "Lat: " + str(lat) + " Long: " + str(long)
 

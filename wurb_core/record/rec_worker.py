@@ -150,7 +150,7 @@ class RecWorker(object):
                     channels=self.connected_input_channels,
                     config_channels=self.connected_config_channels,
                     sampling_freq_hz=int(self.connected_sampling_freq_hz),
-                    # mic_read_buffer_size=mic_read_buffer_size,
+                    mic_read_buffer_size=mic_read_buffer_size,
                     mic_out_buffer_size=process_buffer_size,
                 )
             else:

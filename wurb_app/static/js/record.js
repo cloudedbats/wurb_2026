@@ -1,3 +1,5 @@
+var defaultLatitude = 0.0;
+var defaultLongitude = 0.0;
 
 function recToggleSettings() {
     if (byId("recSettingsId").hidden == true) {
@@ -77,19 +79,9 @@ function modeSelectOnChange(updateDetector) {
 function geoLocationSourceOnChange(updateDetector) {
     let selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value
     byId("geoButtonTextId").innerHTML = "Save"
-    if (selectedValue == "geo-not-used") {
-        byId("geoLatitudeDdId").value = "0.0";
-        byId("geoLongitudeDdId").value = "0.0";
-        byId("geoLatitudeDdId").disabled = true;
-        byId("geoLongitudeDdId").disabled = true;
-        byId("geoLocationButtonId").disabled = true;
-        if (updateDetector) {
-            saveLocationSource()
-        }
-    }
-    else if (selectedValue == "geo-manual") {
-        getManualLocation();
-        byId("geoButtonTextId").innerHTML = "Save lat/long"
+    if (selectedValue == "geo-default") {
+        getDefaultLocation();
+        byId("geoButtonTextId").innerHTML = "Save"
         byId("geoLatitudeDdId").disabled = false;
         byId("geoLongitudeDdId").disabled = false;
         byId("geoLocationButtonId").disabled = false;
@@ -97,18 +89,8 @@ function geoLocationSourceOnChange(updateDetector) {
             saveLocationSource()
         }
     }
-    // Disabled, HTTPS is needed.
-    // else if (selectedValue == "geo-client-gps") {
-    //   activateGeoLocation()
-    //   byId("geoLatitudeDdId").disabled = true;
-    //   byId("geoLongitudeDdId").disabled = true;
-    //   byId("geoLocationButtonId").disabled = false;
-    //   if (updateDetector) {
-    //     saveLocationSource()
-    //   }
-    // }
     else if (selectedValue == "geo-gps") {
-        byId("geoButtonTextId").innerHTML = "Use as manually entered"
+        byId("geoButtonTextId").innerHTML = "Use as default position"
         byId("geoLatitudeDdId").disabled = true;
         byId("geoLongitudeDdId").disabled = true;
         byId("geoLocationButtonId").disabled = false;
@@ -116,16 +98,7 @@ function geoLocationSourceOnChange(updateDetector) {
             saveLocationSource()
         }
     }
-    else if (selectedValue == "geo-gps-or-manual") {
-        byId("geoButtonTextId").innerHTML = "Save"
-        byId("geoLatitudeDdId").disabled = true;
-        byId("geoLongitudeDdId").disabled = true;
-        byId("geoLocationButtonId").disabled = true;
-        if (updateDetector) {
-            saveLocationSource()
-        }
-    }
-    else if (selectedValue == "geo-last-gps-or-manual") {
+    else if (selectedValue == "geo-gps-or-last-found") {
         byId("geoButtonTextId").innerHTML = "Save"
         byId("geoLatitudeDdId").disabled = true;
         byId("geoLongitudeDdId").disabled = true;
@@ -160,26 +133,6 @@ function geoLocationSourceOnChange(updateDetector) {
 //   alert(`Geo location from client:\nERROR(" + error.code + " : " + error.message);
 // };
 
-// Used for the main tabs in the settings tile.
-function hideShowSettingsTabs(tabName) {
-    byId("tabSettingsBasicId").classList.remove("is-active");
-    byId("tabSettingsMoreId").classList.remove("is-active");
-    byId("tabSettingsSchedulerId").classList.remove("is-active");
-    hideDivision(byId("divSettingsBasicId"))
-    hideDivision(byId("divSettingsMoreId"))
-    hideDivision(byId("divSettingsSchedulerId"))
-
-    if (tabName == "basic") {
-        byId("tabSettingsBasicId").classList.add("is-active");
-        showDivision(byId("divSettingsBasicId"))
-    } else if (tabName == "more") {
-        byId("tabSettingsMoreId").classList.add("is-active");
-        showDivision(byId("divSettingsMoreId"))
-    } else if (tabName == "scheduler") {
-        byId("tabSettingsSchedulerId").classList.add("is-active");
-        showDivision(byId("divSettingsSchedulerId"))
-    };
-};
 // Functions used to updates fields based on response contents.
 function updateStatus(status) {
     byId("recStatusId").innerHTML = status.recStatus;
@@ -193,10 +146,12 @@ function updateStatus(status) {
 }
 
 function updateLocation(location) {
+    defaultLatitude = location.latitudeDd;
+    defaultLongitude = location.longitudeDd;
     byId("geoSourceSelectId").value = location.geoSource
-    if (location.geoSource == "geo-manual") {
-        byId("geoLatitudeDdId").value = location.manualLatitudeDd
-        byId("geoLongitudeDdId").value = location.manualLongitudeDd
+    if (location.geoSource == "geo-default") {
+        byId("geoLatitudeDdId").value = location.defaultLatitudeDd
+        byId("geoLongitudeDdId").value = location.defaultLongitudeDd
     } else {
         byId("geoLatitudeDdId").value = location.latitudeDd
         byId("geoLongitudeDdId").value = location.longitudeDd
@@ -207,7 +162,7 @@ function updateLocation(location) {
 
 function updateLatLong(latlong) {
     let selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value
-    if (selectedValue != "geo-manual") {
+    if (selectedValue != "geo-default") {
         byId("geoLatitudeDdId").value = latlong.latitudeDd
         byId("geoLongitudeDdId").value = latlong.longitudeDd
     }
@@ -237,6 +192,11 @@ function updateSettings(settings) {
     byId("recLastGpsAtStartupId").value = settings.lastGpsAtStartup
 
     modeSelectOnChange(updateDetector = false)
+}
+
+function saveSettingsClicked() {
+    saveSettings()
+    recToggleSettings()
 }
 
 function saveUserDefaultSettings() {
