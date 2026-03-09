@@ -48,9 +48,6 @@
                 </option>
             </select>
         </div>
-        <div id="buttonTriggerId" hidden>
-            <button onclick="activateRecordTrigger()" class="button is-rounded is-size-7">Trigger</button>
-        </div>
         <button id="buttonSettingsId" onclick="recToggleSettings()" class="button is-rounded is-size-7">
             <span id="recSettingsTextId">Settings</span>
         </button>
@@ -148,15 +145,19 @@
             <span id="cameraTitleId">Geographic location</span>
             <div class="select is-rounded is-size-7">
                 <select id="geoSourceSelectId" onchange="geoLocationSourceOnChange(updateDetector=true)">
-                    <option value="geo-not-used">Not used</option>
+                    <option value="geo-default">Default position</option>
+                    <option value="geo-gps">GPS</option>
+                    <option value="geo-gps-or-last-found">
+                        GPS or last found GPS
+                    </option>
+                    <!-- <option value="geo-not-used">Not used</option>
                     <option value="geo-manual">Manually entered</option>
-                    <option value="geo-gps">GPS
+                    <option value="geo-gps">GPS</option>
                     <option value="geo-gps-or-manual">GPS or Manually entered
                     </option>
                     <option value="geo-last-gps-or-manual">
                         GPS or Last found or Manually entered
-                    </option>
-                    </option>
+                    </option> -->
                 </select>
             </div>
             <span></span>
@@ -182,7 +183,7 @@
                 <div class="cell">
                     <div class="control">
                         <input id="geoLatitudeDdId" class="input" type="number" step="0.0001" min="-90.0" max="90.0"
-                            placeholder="15.6789">
+                            placeholder="0.00">
                     </div>
                 </div>
                 <div class="cell is-col-span-2"></div>
@@ -193,7 +194,7 @@
                 <div class="cell">
                     <div class="control">
                         <input id="geoLongitudeDdId" class="input" type="number" step="0.0001" min="-180.0" max="180.0"
-                            placeholder="12.3456">
+                            placeholder="0.00">
                     </div>
                 </div>
                 <div class="cell is-col-span-2"></div>
@@ -557,7 +558,7 @@
 
         <div class="container is-fluid">
             <div class="buttons is-centered p-2">
-                <button style="margin:5px;" class="button is-rounded is-size-7" onclick="saveSettings()">
+                <button style="margin:5px;" class="button is-rounded is-size-7" onclick="saveSettingsClicked()">
                     Save
                 </button>
                 <button style="margin:5px;" class="button is-rounded is-size-7" onclick="getSettings()">

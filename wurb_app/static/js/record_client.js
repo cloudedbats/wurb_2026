@@ -51,24 +51,19 @@ async function saveLocation() {
             latitudeDd: byId("geoLatitudeDdId").value,
             longitudeDd: byId("geoLongitudeDdId").value,
         }
-        if (byId("geoSourceSelectId").value == "geo-manual") {
-            location["manualLatitudeDd"] = byId("geoLatitudeDdId").value
-            location["manualLongitudeDd"] = byId("geoLongitudeDdId").value
+        if (byId("geoSourceSelectId").value == "geo-default") {
+            location["defaultLatitudeDd"] = byId("geoLatitudeDdId").value
+            location["defaultLongitudeDd"] = byId("geoLongitudeDdId").value
         }
         if (byId("geoSourceSelectId").value == "geo-gps") {
-            location["geoSource"] = "geo-manual"
-            location["manualLatitudeDd"] = byId("geoLatitudeDdId").value
-            location["manualLongitudeDd"] = byId("geoLongitudeDdId").value
+            location["geoSource"] = "geo-default"
+            location["defaultLatitudeDd"] = byId("geoLatitudeDdId").value
+            location["defaultLongitudeDd"] = byId("geoLongitudeDdId").value
         }
-        if (byId("geoSourceSelectId").value == "geo-gps-or-manual") {
-            location["geoSource"] = "geo-manual"
-            location["manualLatitudeDd"] = byId("geoLatitudeDdId").value
-            location["manualLongitudeDd"] = byId("geoLongitudeDdId").value
-        }
-        if (byId("geoSourceSelectId").value == "geo-last-gps-or-manual") {
-            location["geoSource"] = "geo-manual"
-            location["manualLatitudeDd"] = byId("geoLatitudeDdId").value
-            location["manualLongitudeDd"] = byId("geoLongitudeDdId").value
+        if (byId("geoSourceSelectId").value == "geo-gps-or-last-found") {
+            location["geoSource"] = "geo-default"
+            location["defaultLatitudeDd"] = byId("geoLatitudeDdId").value
+            location["defaultLongitudeDd"] = byId("geoLongitudeDdId").value
         }
         await fetch("/record/save-location/",
             {
@@ -95,14 +90,14 @@ async function getLocation() {
     };
 };
 
-async function getManualLocation() {
+async function getDefaultLocation() {
     try {
         let response = await fetch("/record/get-location/");
         let location = await response.json();
-        byId("geoLatitudeDdId").value = location.manualLatitudeDd
-        byId("geoLongitudeDdId").value = location.manualLongitudeDd
+        byId("geoLatitudeDdId").value = location.defaultLatitudeDd
+        byId("geoLongitudeDdId").value = location.defaultLongitudeDd
     } catch (err) {
-        alert("ERROR getManualLocation: " + err);
+        alert("ERROR getDefaultLocation: " + err);
         console.log(err);
     };
 };
@@ -178,7 +173,7 @@ async function loadSettings(settingsType) {
         let response = await fetch("/record/load-settings/?settingsType=" + settingsType);
         await response.json();
     } catch (err) {
-        alert("ERROR getSettings: " + err);
+        alert("ERROR loadSettings: " + err);
         console.log(err);
     };
 };
