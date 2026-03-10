@@ -39,7 +39,7 @@ async function saveLocationSource() {
                 body: JSON.stringify(location)
             })
     } catch (err) {
-        alert("ERROR saveLocation: " + err);
+        alert("ERROR saveLocationSource: " + err);
         console.log(err);
     };
 };

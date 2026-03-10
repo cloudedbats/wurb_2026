@@ -143,9 +143,11 @@ function updateMap() {
 }
 
 function clearMapContent() {
+    initLeafletMap();
     mapLatitudeArray = [];
     mapLongitudeArray = [];
-    updateMap();
+    // updateMap();
+    leafletMarkers.clearLayers();
 
 }
 

@@ -27,7 +27,12 @@ function recHideSettings() {
 
 // For detector mode.
 function modeSelectOnChange(updateDetector) {
-    let selectedValue = byId("recModeSelectId").options[byId("recModeSelectId").selectedIndex].value
+    var selectedValue = null;
+    try {
+        selectedValue = byId("recModeSelectId").options[byId("recModeSelectId").selectedIndex].value;
+    } catch (err) {
+        selectedValue = "mode-off";
+    }
     hideDivision(byId("recManualTriggeringId"));
     hideDivision(byId("recDetectorPowerOffId"));
     if (selectedValue == "mode-off") {
@@ -77,7 +82,12 @@ function modeSelectOnChange(updateDetector) {
 
 // For the geographic location tile.
 function geoLocationSourceOnChange(updateDetector) {
-    let selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value
+    let selectedValue = null;
+    try {
+        selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value;
+    } catch (err) {
+        selectedValue = "geo-default";
+    }
     byId("geoButtonTextId").innerHTML = "Save"
     if (selectedValue == "geo-default") {
         getDefaultLocation();
@@ -146,8 +156,8 @@ function updateStatus(status) {
 }
 
 function updateLocation(location) {
-    defaultLatitude = location.latitudeDd;
-    defaultLongitude = location.longitudeDd;
+    defaultLatitude = location.defaultLatitudeDd;
+    defaultLongitude = location.defaultLongitudeDd;
     byId("geoSourceSelectId").value = location.geoSource
     if (location.geoSource == "geo-default") {
         byId("geoLatitudeDdId").value = location.defaultLatitudeDd
@@ -161,7 +171,12 @@ function updateLocation(location) {
 }
 
 function updateLatLong(latlong) {
-    let selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value
+    let selectedValue = null;
+    try {
+        selectedValue = byId("geoSourceSelectId").options[byId("geoSourceSelectId").selectedIndex].value;
+    } catch (err) {
+        selectedValue = "geo-default";
+    }
     if (selectedValue != "geo-default") {
         byId("geoLatitudeDdId").value = latlong.latitudeDd
         byId("geoLongitudeDdId").value = latlong.longitudeDd

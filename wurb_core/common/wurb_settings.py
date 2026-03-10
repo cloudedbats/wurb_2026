@@ -299,11 +299,15 @@ class WurbSettings(object):
                 if value is not None:
                     location_db_dict[key] = value
 
-            geo_source = location_db_dict["geoSource"]
+            geo_source = location_db_dict.get("geoSource", "geo-default")
             # Manual.
             if geo_source == "geo-default":
-                location_db_dict["latitudeDd"] = location_db_dict["defaultLatitudeDd"]
-                location_db_dict["longitudeDd"] = location_db_dict["defaultLongitudeDd"]
+                location_db_dict["latitudeDd"] = location_db_dict.get(
+                    "defaultLatitudeDd", 0.0
+                )
+                location_db_dict["longitudeDd"] = location_db_dict.get(
+                    "defaultLongitudeDd", 0.0
+                )
             # GPS.
             if geo_source in ["geo-gps", "geo-gps-or-last-found"]:
                 location_db_dict["latitudeDd"] = 0.0
@@ -406,7 +410,20 @@ class WurbSettings(object):
     async def get_location(self):
         """ """
         try:
-            return self.settings_db.get_values(identity="location")
+            location_dict = self.settings_db.get_values(identity="location")
+            # For backward compatibility.
+            if ("defaultLatitudeDd" not in location_dict) or (
+                "defaultLongitudeDd" not in location_dict
+            ):
+                location_dict["defaultLatitudeDd"] = "0.0"
+                location_dict["defaultLongitudeDd"] = "0.0"
+            if location_dict.get("geoSource", "") not in [
+                "geo-default",
+                "geo-gps",
+                "geo-gps-or-last-found",
+            ]:
+                location_dict["geoSource"] = "geo-default"
+            return location_dict
         except Exception as e:
             message = "WurbSettings - get_location. Exception: " + str(e)
             self.logger.debug(message)
