@@ -53,10 +53,12 @@ function annoNightChanged() {
     selectedSourceValue = byId("annoSelectSourceId").value;
     selectedNightValue = byId("annoSelectNightId").value;
     var select = byId("annoSelectRecId");
+    var lastUsedRecValue = select.value;
+    var lastUsedRecIndex = select.selectedIndex;
     while (select.firstChild) {
         select.removeChild(select.firstChild);
     }
-    getRecordings(selectedSourceValue, selectedNightValue)
+    getRecordings(selectedSourceValue, selectedNightValue, lastUsedRecValue, lastUsedRecIndex);
 }
 
 function annoRecChanged() {

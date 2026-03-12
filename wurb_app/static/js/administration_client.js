@@ -49,6 +49,11 @@ async function getAdminSourceDirs() {
 };
 
 async function getAdminNights(sourceId) {
+
+    var selectPulldown = byId("adminSelectNightId");
+    pulldownValue = selectPulldown.value;
+    pulldownIndex = selectPulldown.selectedIndex;
+
     fetch("/administration/nights?" + new URLSearchParams({
         sourceId: sourceId,
     }), { method: "GET" })
@@ -80,22 +85,31 @@ async function getAdminNights(sourceId) {
                 select.appendChild(option);
             }
             // Select same row as before.
-            var select = byId("adminSelectNightId");
             var found = false;
-            for (var i = 0; i < select.options.length; i++) {
+            for (var i = 1; i < select.options.length; i++) {
                 if (select.options[i].value == adminSelectedNightValue) {
-                    select.selectedIndex = i;
                     found = true;
                     break;
                 }
             }
-            if (found == false) {
-                if (json.length >= 1) {
-                    select.selectedIndex = 1
+            if (json.length == 0) {
+                select.selectedIndex = 0
+            } else {
+                if (found == true) {
+                    select.selectedIndex = pulldownIndex
                 } else {
-                    select.selectedIndex = 0
+                    if (pulldownIndex <= 0) {
+                        select.selectedIndex = json.length
+                    } else {
+                        if (pulldownIndex <= json.length) {
+                            select.selectedIndex = pulldownIndex
+                        } else {
+                            select.selectedIndex = json.length
+                        }
+                    }
                 }
             }
+            adminSelectedNightValue = select.value;
             adminNightChanged()
         })
         .catch(function (err) {
