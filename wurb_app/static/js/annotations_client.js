@@ -44,6 +44,11 @@ async function getSourceDirs() {
 };
 
 async function getNights(sourceId) {
+
+    var selectPulldown = byId("annoSelectNightId");
+    pulldownValue = selectPulldown.value;
+    pulldownIndex = selectPulldown.selectedIndex;
+
     fetch("/annotations/nights?" + new URLSearchParams({
         sourceId: sourceId,
     }), { method: "GET" })
@@ -75,23 +80,31 @@ async function getNights(sourceId) {
                 select.appendChild(option);
             }
             // Select same row as before.
-            var select = byId("annoSelectNightId");
             var found = false;
-            for (var i = 0; i < select.options.length; i++) {
+            for (var i = 1; i < select.options.length; i++) {
                 if (select.options[i].value == selectedNightValue) {
-                    select.selectedIndex = i;
                     found = true;
                     break;
                 }
             }
-            if (found == false) {
-                if (json.length >= 1) {
-                    select.selectedIndex = 1
+            if (json.length == 0) {
+                select.selectedIndex = 0
+            } else {
+                if (found == true) {
+                    select.selectedIndex = pulldownIndex
                 } else {
-                    select.selectedIndex = 0
+                    if (pulldownIndex <= 0) {
+                        select.selectedIndex = json.length
+                    } else {
+                        if (pulldownIndex <= json.length) {
+                            select.selectedIndex = pulldownIndex
+                        } else {
+                            select.selectedIndex = json.length
+                        }
+                    }
                 }
-                // annoNightChanged()
             }
+            selectedNightValue = select.value;
             annoNightChanged()
         })
         .catch(function (err) {
@@ -99,7 +112,10 @@ async function getNights(sourceId) {
         })
 };
 
-async function getRecordings(sourceId, nightId) {
+async function getRecordings(sourceId, nightId, lastUsedRecValue, lastUsedRecIndex) {
+
+    var selectPulldown = byId("annoSelectRecId");
+
     fetch("/annotations/recordings?" + new URLSearchParams({
         sourceId: sourceId,
         nightId: nightId,
@@ -134,23 +150,23 @@ async function getRecordings(sourceId, nightId) {
                 select.appendChild(option);
             }
             // Select same row as before.
-            var select = byId("annoSelectRecId");
             var found = false;
-            for (var i = 0; i < select.options.length; i++) {
-                if (select.options[i].value == selectedRecValue) {
-                    select.selectedIndex = i;
+            for (var i = 1; i < select.options.length; i++) {
+                if (select.options[i].value == lastUsedRecValue) {
                     found = true;
                     break;
                 }
             }
-            if (found == false) {
-                if (json.length >= 1) {
-                    select.selectedIndex = 1
+            if (json.length == 0) {
+                select.selectedIndex = 0
+            } else {
+                if (found == true) {
+                    select.selectedIndex = lastUsedRecIndex
                 } else {
-                    select.selectedIndex = 0
+                    select.selectedIndex = 1
                 }
-                // annoRecChanged()
             }
+            selectedRecValue = select.value;
             annoRecChanged()
         })
         .catch(function (err) {

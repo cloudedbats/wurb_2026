@@ -66,7 +66,13 @@ function updateActivityPlot() {
         y: activityPlotArray,
         mode: "markers"
     }];
-    activityPlotLayout.title.text = adminSelectedNightValue;
+
+    if (adminSelectedNightValue == "select") {
+        activityPlotLayout.title.text = "Monitoring night not selected";
+    } else {
+        activityPlotLayout.title.text = adminSelectedNightValue;
+    }
+
     Plotly.newPlot("activityPlotId", data, activityPlotLayout, activityPlotConfig);
 }
 
@@ -143,9 +149,11 @@ function updateMap() {
 }
 
 function clearMapContent() {
+    initLeafletMap();
     mapLatitudeArray = [];
     mapLongitudeArray = [];
-    updateMap();
+    // updateMap();
+    leafletMarkers.clearLayers();
 
 }
 
