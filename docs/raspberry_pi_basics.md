@@ -128,40 +128,123 @@ There is a possibility to customize this via configuration files, more informati
 
 ## Communication
 
-Although a Raspberry Pi is a small computer, there are many possible ways to communicate with it remotely or inside your local network.
+Although a Raspberry Pi is a small computer, there are many possible ways to communicate with it remotely or as a part of your local network.
 
-Both WURB and WIRC run in what is called "headless mode", which means that there is no graphic user interface in the same way as for a desktop computer.
-For maintenance you have to use SSH to connect from a terminal window.
+Both WURB and WIRC run in what is called "headless mode",
+which means that there is no graphic user interface in the same way as for a desktop/laptop computer.
+For maintenance you have to use SSH and connect from a terminal window.
 However, the detector contain a web server and the detectors user interface can be accessed via regular web browsers.
-This happens in the same way regardless of whether the detector is part of your own home network or if it is placed out in the field with internet access.
+This works the same way regardless of whether the detector is locally connected to your own home network, if the detector shares it's own
+WiFi network as a hotspot, or if it is placed somewhere out in the field with internet access.
 
 ### WiFi and local network
 
-TODO...
+When installing the operating system via "Raspberry Pi Imager", you have probably entered the name and password for your local WiFi network.
+This WiFi connection works both when installing the system and when you later want to run your detector.
+
+In the following examples we assume that the hostname of your detector is "wurb01". If you are on your local network, add ".local" after the hostname.
+Use this command to connect with SSH:
+
+    ssh wurb@wurb01.local
+
+The WURB software use port 8080 and WIRC use 8082 by default.
+Use a web browser to access the user interface for WURB and WIRC:
+
+    http://wurb01.local:8080
+    http://wurb01.local:8082
+
+Note that if you reinstall the system and keep the same hostname, you may have to clear a file containing known hosts.
+This is part of a security system that is present on most computers.
+On macOS, this file is located in a hidden folder and is called ".ssh/known_hosts".
 
 ### Modem cable (Ethernet)
 
-TODO...
+I there are problems with the WiFi solution above, then you can use a modem cable to connect the Rasperry Pi to an internet modem.
+The rest works as described above.
+
+Note that this alterative can be combined with Power-over-Ethernet (PoE).
+
+### Raspberry Pi as a hotspot
+
+Many users use the WiFi unit in the Raspberry Pi to let it share it's own network as a WiFi hotspot.
+Then it is easy to connect to it from a mobile phone to run the user interface when out in the field.
+
+In this case ".local" should not be used. Use this instead for SSH and for the web addresses to the user interfaces:
+
+    ssh wurb@wurb01
+    http://wurb01:8080
+    http://wurb01:8082
+
+There is an instruction for how to install the WiFi hotspot in the installation instruction.
+
+Since the Raspberry Pi only have one internal WiFi unit it is not possible to use it to connect to your home network
+again with WiFi. One practical solution is to add a second WiFi unit as a USB connected one,
+or use a modem cable when you are back home.
+
+One important thing to notice if you are running the detector as a hotspot without any connection to internet is that time is not set properly.
+The solution to this is that there is a button in the user interface called "Set time".
+Another solution is to attach a GPS unit. When it has been running for some time the GPS time will be used to set the detector time.
 
 ### WiFi for internet access
 
-- Can be combined with power supply (PoE).
+When the detector is installed as a permanent station at a place where WiFi is available it can be used to remotely connect to it.
+There is a command line tool with as simple graphical user interface that can be used to configure WiFi connections:
 
-TODO...
+    sudo nmtui
+
+It is recommended to use a "guest" network since there is no need for the detector to have access to someones local network.
+
+To remotely connect to the detector with SSH, HTTP and SFTP I normally use Tailscale. More info below.
+For temporary use and if it is not set up as a hotspot you can share internet from your mobile phone and then use Tailscale
+to access it from your phone, or any other device with internet connection.
 
 ### 4G/LTE
 
-TODO...
+If there is no WiFi available it is possible to use a 4G/LTE modem. 
+The USB modem Huawei E3372 is often recommended for use with Raspberry Pi and I have used them a lot.
+It is also possible to use a normal internet modem with 4G/LTE and then connect
+to that one with a modem cable or WiFi.
+
+Tailscale can also be used here.
 
 ### Bluetooth
 
-Bluetooth is not used for WURB and WIRC, but it is part of the Raspberry Pi hardware and may be used in the future.
+Bluetooth is not used for WURB and WIRC, but it is a part of the Raspberry Pi hardware and can be used in the future.
 
-## FILE ACCESS
+## File Access with SFTP
+
+If the recorded files are stored at an external USB memory device,
+then that device can be moved to a desktop/laptop computer for post processing.
+If the files are stored on the micro SD card in the Raspberry Pi then it must be downloaded with SFTP.
+This is also a possibility if the detector is remotely deployed and connected to internet in some way.
+
+The SFTP client software I mostly use is **FileZilla** and it is available for Windows, macOS and Linux.
+For Windows users there is a similar software called **WinSCP**.
+
+Connect with:
+
+    Protokol: SFTP
+    Host: wurb01     (or "wurb01.local" if on your local network)
+    User: wurb
+    Password: your-secret-password
+
+Then the recorded sound files stored on the micro SD card can be found in this directory "/home/wurb/wurb_recordings".
+If they are stored on the USB memory devices they can be found "/media/USB-sda1/wurb_recordings" or
+here "/media/USB-sda2/wurb_recordings". In summary, look here for the recorded sound files:
+
+    /home/wurb/wurb_recordings
+    /media/USB-sda1/wurb_recordings
+    /media/USB-sda2/wurb_recordings
+
+## Tailscale, or similar tunneling techniques
 
 TODO...
 
 ## ADVANCED TOPICS
+
+TODO...
+
+### Troubleshooting
 
 TODO...
 
