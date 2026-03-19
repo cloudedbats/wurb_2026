@@ -136,7 +136,7 @@ Replace other parts, marked in bold, to match your needs:
 
 - Hostname: **wurb01**
 - User: wurb
-- Password: **secret-password**
+- Password: **your-secret-password**
 - WiFi SSID: **home-network**
 - Password: **home-network-password**
 - Wireless LAN country: **SE**
@@ -221,7 +221,7 @@ The SSH session will be stopped immediately because the Raspberry Pi only contai
 which can either be used to connect to a WiFi network or to run as a hotspot.
 Then you need to use an Ethernet cable, an additional USB WiFi dongle, or a USB 4G/LTE modem to reach the internet.
 
-When using the hotspot, the detector will use the IP address 10.42.0.1 and then
+When using the hotspot mode, the detector will use the IP address 10.42.0.1 and then
 <http://10.42.0.1:8080> should be used to access the detectors user interface.
 
 ### USB stick or external SSH device
