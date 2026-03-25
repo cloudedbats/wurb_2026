@@ -7,7 +7,7 @@ web based graphical user interface is organized.
 There is also a section for advanced users who want to modify the
 configuration file.
 
-Since the WURB detector is a DIY system you must buy and assembly the
+Since the WURB detector is a DIY system you have to buy and assembly the
 hardware parts yourself, and also install the software needed.
 The software and installation instruction can be found here:
 <https://github.com/cloudedbats/wurb_2026>
@@ -20,7 +20,7 @@ offer you should take a look in this document:
 ## How to start the user interface
 
 If the detector is built as described in the installation instructions,
-simply connect power to start it. Then wait while it boots up.
+just plug in the power to start it. Then wait while it boots up.
 The Raspberry Pi 5 has an on/off button, but earlier models do not,
 so these must be turned off by cutting the power.
 
@@ -88,7 +88,7 @@ If you have used the annotations modul, then there is this module with the
 focus on monitoring nights instead of single sound files.
 Files marked as trash can be removed and an Excel report can be generated based
 on the information that is provided in the previous module.
-There is also one diagram and one map that can show where and when there has
+There is also one diagram and one map that can show when and where there has
 been activity during the night.
 
 ## Module "Record"
@@ -111,7 +111,7 @@ the system.
 This can be done manually and they are expressed as latitude / longitude in the
 decimal-degree format, for example longitude = 15.00 degrees for the central
 meridian in Sweden.
-This positions is needed for the scheduler to calculate sunset, sunrise, etc.
+This position is needed for the scheduler to calculate sunset, sunrise, etc.
 even when a GPS unit fails to deliver the right position.
 
 <br clear="right"/>
@@ -132,6 +132,8 @@ and shut down or restart the detector.
 
 <br clear="right"/>
 
+Mode options are:
+
 - **Microphone - Off**
 In this mode the detector is on but the sound stream from the microphone is
 turned off.
@@ -145,8 +147,7 @@ between the files if they are to be concatenated into bigger files later.
 - **Recording - Auto detection**
 This mode can be used for both active and passive monitoring.
 The recording is started when sound is detected, see settings below for more details.
-A one seconds long prefetch buffer of recorded sound before the triggering event
-will be saved to file,
+A one second prefetch buffer before the triggering event will be saved,
 and then the recording will last until the specified file length is reached.
 If needed, the recording will continue and result in more files, all of them with
 the same length.
@@ -170,7 +171,7 @@ stopped related to the scheduler settings.
 
 - **Load "User default" settings**
 It is possible to save settings as "User default".
-When selecting this mode the detector is reset to this state.
+When selecting this mode the detector is set to this state.
 More info on how to save this "User default" setting in the settings section below.
 
 - **Load "Start-up" settings**
@@ -186,13 +187,16 @@ they are stored.
 
 - **Detector - Power off**
 Three buttons will appear: "Shutdown", "Restart" and "Cancel".
+These choices will only work if the detector is running on a computer with
+the same operating system normally used on the Raspberry Pi.
+
 
 #### 2. Status
 
 USB microphones can be attached and removed without turning the detector off.
 Each time a recording session is activated, then the detector will scan for
 connected microphones.
-The name of the used one is displayed here.
+The name of the used one will be displayed here.
 
 Check the [Raspberry Pi basics](./raspberry_pi_basics.md) document
 for a list of directly supported microphones.
@@ -237,12 +241,16 @@ timestamps.
 
 Each recorded file has a filename that contains both time and location.
 This makes it easy to find recordings on your hard disks by searching for parts
-of the date or latitude/longitude strings.
+of the date and time or latitude/longitude strings.
 This feature also makes it easy to use the detector for transect monitoring.
+
+In addition to the position being saved for each audio recording,
+there is also a file that is stored with the night's recordings where the
+position for each minute is noted.
 
 <br clear="right"/>
 
-There are some different modes available:
+There are three different modes available:
 
 - **Default position**
 Use this if you want to use the scheduler and/or tag the files without using
@@ -252,11 +260,20 @@ to distinguish them from
 the more exact GPS received positions.
 
 - **GPS**
-Scheduler is only available when there are GPS satellites detected.
-This is an useful option if GPS is not always attached.
+In this mode you will either get the position from the GPS unit,
+or the default position.
+Note that if the default position is set to 0.0/0.0 and the GPS fails
+to get a GPS position, then the scheduler will stop recordings.
 
 - **GPS or Last found GPS**
-This alternative is useful if you have many detectors, but only one GPS receiver.
+This is probably the best alternative to use for many use cases.
+
+128
+In the detector settings you can define whether the "Last found GPS"
+should be saved from the last session or cleared at startup.
+If it is cleared the default position will be used as fallback position.
+
+This alternative is also useful if you have many detectors, but only one GPS receiver.
 Connect the GPS receiver during deployment and wait until the position is found
 and time is set from GPS.
 Then the GPS receiver can be removed and be used to deploy the next detector.
@@ -269,13 +286,18 @@ Then the GPS receiver can be removed and be used to deploy the next detector.
 
 #### 1. Settings - Basic
 
-This basic part contains settings that can be useful to modified at each deployment.
+This part contains settings that can be modified at each deployment.
 You can modify:
 
 - The name of the directory where recorded files are stored.
 - The prefix for each sound file.
 - The lower limit in kHz for the sound detection algorithm.
 - The sensitivity level in dBFS for the sound detection algorithm.
+
+The sensitivity level is expressed as dBFS. This is a decibel scale
+where 0 is the max value at the point where the signal starts to distort.
+Then the values are negative. -50 dBFS is used as default, -40 will give
+less recorded files and -60 dBFS more recorded files.
 
 #### 2. Settings - Scheduler
 
@@ -286,7 +308,7 @@ It is activated when the detector mode is either "Scheduler - Recording on" or
 and the values for latitude and longitude differ from zero.
 Be sure that the time also is properly set.
 
-It is possible to define one start event and one stop event each day.
+It is possible to define one start event and one stop event for each night.
 Either at fixed times or in relation to sunset, dusk, dawn and sunrise.
 
 #### 3. Settings - More
@@ -302,14 +324,16 @@ the only option.
 Note: Both alternatives contains the exact same amount of samples,
 the only difference is in the header part that tells which sampling frequency
 that was used.
-For example 384 kHz in FS mode and 38.4 kHz in TE mode. The sound will the be
+For example 384 kHz in FS mode uses 38.4 kHz in TE mode. The sound will then be
 played in slow-motion.
 - If time should be set from GPS when using a Raspberry Pi.
 - If last found GPS value is to be cleared or reused from earlier session at startup.
-- Finally there are two buttons and a possibility to select the start-up
+- Then there are two buttons and a possibility to select the start-up
 configuration.
 The buttons **User default** and **Start-up** are used to save settings that
 are easily available in the detectors mode selection list.
+- The last setting is whether the detector should retain its settings from the
+previous session or whether the "Start-up" settings should be used at start up.
 
 <br clear="right"/>
 
@@ -323,7 +347,7 @@ TODO...
 
 <br clear="right"/>
 
-### Navigation
+### Navigation - sources, directories and files
 
 ### Data and spectrogram
 
@@ -341,7 +365,7 @@ TODO...
 
 <br clear="right"/>
 
-### Navigation
+### Navigation - sources and directories
 
 It is similar as in the Annotations module, but without the "Recordings" part.
 
@@ -351,13 +375,61 @@ It is similar as in the Annotations module, but without the "Recordings" part.
 
 ### Excel report
 
-## Advanced topics and troubleshooting
+## File management
 
-For the advanced part it may be needed to log in to the detector with SSH.
-Start a terminal window and then type:
+There are two main ways to move recorded audio files to a computer
+for post-processing. The most obvious is to record them to an external
+USB flash drive and then move that device to the computer.
 
-    ssh wurb@wurb01.local   # If it is connected to the local network.
-    ssh wurb@10.42.0.1   # If it is running in hotspot mode.
+The other way is to use the SFTP protocol for transfer.
+There are two free SFTP clients that can be recommended:
+
+- **FileZilla** for Windows, macOS and Linux.
+- **WinSCP** for Windows.
+
+In the FileZilla example you can use the button in the upper left
+corner to register a list of detectors.
+Enter this information for each connection:
+
+    Protocol: SFTP
+    Host: wurb01
+    User: wurb
+    Password: your-secret-password
+
+Replace Host: "wurb01" with "wurb01.local" if on your local network or
+the IP address 10.42.0.1 if it is accessed in hotspot mode.
+
+Then there are three directories located at the detectors SD card
+that are of interest:
+
+- /home/wurb/wurb_recordings
+- /home/wurb/wurb_logging
+- /home/wurb/wurb_settings
+
+If external USB flash drives are used their content can be found here:
+
+- /media/USB-sda1/
+- /media/USB-sdb1/
+
+## Advanced topics
+
+There are three main protocols used to access the WURB detector.
+
+- **HTTP** is used for the web-based user interface.
+- **SFTP** is used for file access via an SFTP client.
+- **SSH** is used for access via a terminal window.
+
+This advanced section is mainly targeting users that are familiar with
+Linux commands and knows how to use a terminal window.
+
+Please note that SSH and SFTP both are password protected, but HTTP is not.
+If you are planning to publish HTTP you should consider to add another layer
+with for example nginx and add a user/password login there.
+
+For SSH start a terminal window and then type:
+
+    ssh wurb@wurb01.local  # If it is connected to the local network.
+    ssh wurb@10.42.0.1     # If it is running in hotspot mode.
 
 ### Settings and configuration
 
@@ -379,7 +451,7 @@ Both can be found in the directory "wurb_settings".
 
 There are four sets of settings stored in the database and they can be loaded in
 the Record module.
-They are described earlier in this document and the are "Current settings",
+They are described earlier in this document and they are "Current settings",
 "User default setting", "Start-up settings" and  "Factory default settings".
 
 If there are problems, or if you want to do a reset to factory settings/configuration,
@@ -390,23 +462,126 @@ then the easiest way is to just remove the wurb_settings directory and restart.
 
 #### Configuration
 
-TODO...
+Configurations are stored in a YAML file.
+YAML is similar to the JSON format, but you don't have to write that
+many characters like {, }, ", [ and ].
+YAML is like JSON, but for humans.
+
+It is located here: /home/wurb/wurb_settings/wurb_config.yaml
+and if it is missing at start up it will be created from this file
+/home/wurb/wurb_2026/wurb_config_default.yaml
+
+The reason is that if it is modified by a user, then the version
+that is stored outside the Git controlled area will remain
+after a "git pull" command.
 
 #### Add a new microphone
 
-TODO...
+There are many types of microphones registered in the configuration file,
+but if you have a new model you can do this to add them to the list of
+automatically identified ones.
+
+1. Connect the new microphone to the detector.
+2. Start the detector.
+3. Check the debug log file and look for connected microphones.
+4. Add a part of the description to the configuration file.
+
+Example part from the debug log file:
+
+    cat /home/wurb/wurb_logging/wurb_debug_log.txt
+
+    : Welcome to CloudedBats WURB-2026
+    : Project: https://github.com/cloudedbats/wurb_2026
+    : ====================== ^ö^ ======================
+    : WURB - main. Startup settings. 
+    : WURB - main. Startup core. 
+    : Connected microphones at startup: 
+    : - Bat_Detector_USB_384kHz: USB Audio (hw:4,0)   MONO at 384000.0 Hz  
+
+Example part from the configuration file.
+The Bat_Detector is already there:
+
+    cat /home/wurb/wurb_settings/wurb_config.yaml
+
+    : audio_capture:
+    : - device_name: Pettersson
+    : - device_name: UltraMic : For Dodotronic.
+    : - device_name: PIPPYG
+    : - device_name: Bat_Detector
+    : - device_name: AudioMoth
+    :   sampling_freq_hz: 384000
 
 #### Add a new GPS receiver
 
-TODO...
+This is similar as the above example, but check for
+"Connected serial devices" in the debug log file and
+"gps_device_whitelist" in the configuration file.
 
 #### Change directories used for recorded files
 
-TODO...
+It is possible to change the directories used for recorded files,
+both for where to put them when recorded and also for where to
+look for them in the Annotation and Administration modules.
+
+Example part from the configuration file.
+
+    cat /home/wurb/wurb_settings/wurb_config.yaml
+
+    : record:
+    :   targets:
+    :     - id: sda1
+    :       name: USB-1
+    :       os: Linux
+    :       media_path: /media/USB-sda1
+    :       rec_dir: wurb_recordings
+    :     - id: sdb1
+    :       name: USB-2
+    :       os: Linux
+    :       media_path: /media/USB-sdb1
+    :       rec_dir: wurb_recordings
+    :     - id: local
+    :       name: Local
+    :       executable_path_as_base: true
+    :       rec_dir: ../wurb_recordings
+    :       free_disk_limit: 500 # Unit MB.
+
+There are also some commented sections that may be useful if the WURB software 
+is running on a desktop/laptop computer.
 
 #### WURB software update
 
-TODO...
+If you want to update the WURB-2026 software to the latest version,
+then follow this instruction.
+
+    # Always start with this.
+    sudo apt update
+    sudo apt upgrade -y
+    # Move to where the software is installed.
+    cd /home/wurb/wurb_2026
+    # Activate the virtual python environment.
+    source venv/bin/activate
+    # Get the latest version from GitHub.
+    git pull
+    # Check if there are new python modules needed.
+    pip install -r requirements.txt
+    # And then finally restart the detector.
+    sudo reboot
+
+If there are problems try to reset it to factory settings
+and restart again.
+
+    cd /home/wurb
+    rm -r wurb_setting
+
+If there still are problems, then I recommend a complete reinstallation.
+This should always be done when there are new major releases of the
+Debian operation system.
+
+## And finally...
+
+If you find a solution to a problem, let me know.
+If it was a problem for you, it will probably be a problem for
+other users. And together we can help both users and bats.
 
 ## Contact
 
