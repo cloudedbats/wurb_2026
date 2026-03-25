@@ -84,7 +84,7 @@ In some way it looks like a post processing tool,
 but it is just meant to be a light version to be used when out in the field.
 
 - **Administration.**
-If you have used the annotations modul, then there is this module with the
+If you have used the annotations module, then there is this module with the
 focus on monitoring nights instead of single sound files.
 Files marked as trash can be removed and an Excel report can be generated based
 on the information that is provided in the previous module.
@@ -189,7 +189,6 @@ they are stored.
 Three buttons will appear: "Shutdown", "Restart" and "Cancel".
 These choices will only work if the detector is running on a computer with
 the same operating system normally used on the Raspberry Pi.
-
 
 #### 2. Status
 
@@ -343,17 +342,46 @@ previous session or whether the "Start-up" settings should be used at start up.
 <img align="right" width="50%" height="auto" src="../images/6_annotations.png">
 </p>
 
-TODO...
+Here are some reasons why this module exists:
+
+- It is good to be able to check what was recorded
+immediately without having to wait until the next day.
+- It is good to check that everything is okay before leaving the detector for
+the rest of the night.
+- If you are looking at a spectrogram, it is more efficient to make some notes
+immediately. For example, junk recordings can be marked as Q0 and deleted immediately.
+- For stationary detectors that can be accessed remotely, this feature
+is particularly good to have.
 
 <br clear="right"/>
 
 ### Navigation - sources, directories and files
 
+Here you can select where the recorded files are stored.
+Local is for files stored on the detectors micro SD card and USB-1/USB-2 are
+used for attached file storage units.
+
+Then there is a list of directories, one for each monitoring night.
+And finally a list of recordings for the selected night.
+
 ### Data and spectrogram
+
+There are currently two options for visualization.
+Either metadata or the spectrogram.
+Note that the spectrogram is a simple viewer and you cannot zoom into it.
 
 ### Quality, tags and comments
 
+There are some alternatives for annotations, use them as you want.
+If an Excel report is generated in the Administration module all
+annotations will be a part of that report.
+
+The quality tags "Q0" and "Not assigned" can be removed in the
+Administration module.
+
 ### Shortcuts
+
+There are some shortcuts available that are handy to have.
 
 ## Module "Administration"
 
@@ -361,19 +389,36 @@ TODO...
 <img align="right" width="50%" height="auto" src="../images/7_administration.png">
 </p>
 
-TODO...
+The Annotations module is focusing on single recorded files.
+
+In this Administration module focus is on recording nights,
+and the goal is to give an overview of each night.
 
 <br clear="right"/>
 
 ### Navigation - sources and directories
 
-It is similar as in the Annotations module, but without the "Recordings" part.
+This is similar to the Annotations module, but without the "Recordings" part.
 
 ### Data, activities and map
 
+It is always important to know where and when there was activity during
+the night.
+Here you can check that as an activity diagram and on a map.
+Not that the map is only visible if the web browser is connected to internet.
+
 ### Cleanup
 
+Here you can remove files marked as "Q0" or "Not assigned".
+It is also possible to remove monitoring nights.
+
+Another more effective way to remove monitoring nights and files
+is described in the File management section below.
+
 ### Excel report
+
+An Excel report can be generated with both annotations and other metadata
+for each recorded file.
 
 ## File management
 
@@ -387,8 +432,12 @@ There are two free SFTP clients that can be recommended:
 - **FileZilla** for Windows, macOS and Linux.
 - **WinSCP** for Windows.
 
+<p align="center">
+<img align="right" width="50%" height="auto" src="../images/8_filezilla.png">
+</p>
+
 In the FileZilla example you can use the button in the upper left
-corner to register a list of detectors.
+corner (Site Manager) to register a list of detectors.
 Enter this information for each connection:
 
     Protocol: SFTP
@@ -398,6 +447,8 @@ Enter this information for each connection:
 
 Replace Host: "wurb01" with "wurb01.local" if on your local network or
 the IP address 10.42.0.1 if it is accessed in hotspot mode.
+
+<br clear="right"/>
 
 Then there are three directories located at the detectors SD card
 that are of interest:
@@ -545,7 +596,7 @@ Example part from the configuration file.
     :       rec_dir: ../wurb_recordings
     :       free_disk_limit: 500 # Unit MB.
 
-There are also some commented sections that may be useful if the WURB software 
+There are also some commented sections that may be useful if the WURB software
 is running on a desktop/laptop computer.
 
 #### WURB software update
