@@ -1,12 +1,12 @@
 # Commands used to enable/disable
 # services for WURB_2026 and WIRC_2026.
 #
-# Installation. Run these commands and restart the terminal.
+# Installation:
 #
 # cp /home/wurb/wurb_2026/raspberrypi_files/bash_aliases /home/wurb/.bash_aliases
 # chmod 755 /home/wurb/.bash_aliases
+# source /home/wurb/.bash_aliases
 #
-
 
 function wurb-on {
     sudo systemctl enable wurb_2026.service
