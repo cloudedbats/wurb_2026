@@ -24,16 +24,15 @@ async def load_about_page(request: fastapi.Request):
     try:
         logger.debug("API called: module_about.")
         return templates.TemplateResponse(
-            "about.html",
-            {
-                "request": request,
-                "wurb_version": wurb_core.__version__,
-            },
+            request=request,
+            name="about.html",
+            context={"wurb_version": wurb_core.__version__},
+            # "about.html",
+            # {
+            #     "request": request,
+            #     "wurb_version": wurb_core.__version__,
+            # },
         )
     except Exception as e:
         message = "API - load_about_page. Exception: " + str(e)
         logger.debug(message)
-
-    except Exception as e:
-        message = "AAAAA - BBBBB. Exception: " + str(e)
-        self.logger.debug(message)

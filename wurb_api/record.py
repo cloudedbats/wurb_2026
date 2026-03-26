@@ -32,11 +32,14 @@ async def load_record_page(request: fastapi.Request):
     try:
         logger.debug("API called: module_record.")
         return templates.TemplateResponse(
-            "record.html",
-            {
-                "request": request,
-                "wurb_version": wurb_core.__version__,
-            },
+            request=request,
+            name="record.html",
+            context={"wurb_version": wurb_core.__version__},
+            # "record.html",
+            # {
+            #     "request": request,
+            #     "wurb_version": wurb_core.__version__,
+            # },
         )
     except Exception as e:
         message = "API - load_record_page. Exception: " + str(e)
