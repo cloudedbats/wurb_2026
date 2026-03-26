@@ -28,11 +28,14 @@ async def load_admin_page(request: fastapi.Request):
     try:
         logger.debug("API called: module_admin.")
         return templates.TemplateResponse(
-            "administration.html",
-            {
-                "request": request,
-                "wurb_version": wurb_core.__version__,
-            },
+            request=request,
+            name="administration.html",
+            context={"wurb_version": wurb_core.__version__},
+            # "administration.html",
+            # {
+            #     "request": request,
+            #     "wurb_version": wurb_core.__version__,
+            # },
         )
     except Exception as e:
         message = "API - load_admin_page. Exception: " + str(e)

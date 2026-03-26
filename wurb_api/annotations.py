@@ -28,11 +28,14 @@ async def load_annotations_page(request: fastapi.Request):
     try:
         logger.debug("API called: module_annotations.")
         return templates.TemplateResponse(
-            "annotations.html",
-            {
-                "request": request,
-                "wurb_version": wurb_core.__version__,
-            },
+            request=request,
+            name="annotations.html",
+            context={"wurb_version": wurb_core.__version__},
+            # "annotations.html",
+            # {
+            #     "request": request,
+            #     "wurb_version": wurb_core.__version__,
+            # },
         )
     except Exception as e:
         message = "API - load_annotations_page. Exception: " + str(e)
