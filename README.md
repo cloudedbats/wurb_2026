@@ -11,13 +11,15 @@ and the software is completely open source and free.
 WURB-2026 is the fourth major release of the WURB software.
 The three previous archives are named "cloudedbats_wurb" from 2017,
 "cloudedbats_wurb_2020" and "cloudedbats_wurb_2024".
-Functionally, wurb_2026 is similar to cloudedbats_wurb_2024.
-The user interface has been updated and some new features have been added.
+Functionally, wurb_2026 is similar to cloudedbats_wurb_2024,
+but the user interface has been updated and some new features have been added.
 Some other features have been removed for various reasons.
 
 The WURB-2026 detector can be used for both active and passive bat monitoring.
 If connected to the internet, it can be controlled completely remotely and is
 therefore a good candidate for a permanent monitoring station.
+
+The software is completely open and free to use, even for commercial purposes.
 
 ## Pros and Cons
 
@@ -55,7 +57,7 @@ Cons:
 
 - Some knowledge of Linux is required to install the software.
 If you do not have this knowledge yourself, you will have to ask for help.
-If you say that you want help with a Raspberry Pi to study bats, 
+If you say that you want help with a Raspberry Pi to study bats,
 it is probably not that difficult to get help.
 
 - The power consumption is higher than for equivalent ready-made detectors.
@@ -117,7 +119,12 @@ It provides an overview of both where and when activities have occurred.
 
 ## Documentation
 
-User documentation is (soon) available here: TODO.
+Before purchasing the hardware for your detector, it is recommended that you read
+this document:
+[WURB Raspberry Pi basics](./raspberry_pi_basics.md)
+
+Then there is a user manual that describes how to use the system:
+[WURB-2026 user manual](./wurb_user_manual.md)
 
 ## Installation - Raspberry Pi
 
@@ -136,7 +143,7 @@ Replace other parts, marked in bold, to match your needs:
 
 - Hostname: **wurb01**
 - User: wurb
-- Password: **secret-password**
+- Password: **your-secret-password**
 - WiFi SSID: **home-network**
 - Password: **home-network-password**
 - Wireless LAN country: **SE**
@@ -194,7 +201,7 @@ It should now be up and running. Open a browser with the following address:
 
 ### Raspberry Pi as a WiFi hotspot
 
-If the detector is to be accessed outside the home network, 
+If the detector is to be accessed outside the home network,
 it can be run in hotspot mode and activate its own WiFi network.
 
 In the example below, the WiFi name will be "WiFi-wurb01" and the password "chiroptera".
@@ -221,7 +228,7 @@ The SSH session will be stopped immediately because the Raspberry Pi only contai
 which can either be used to connect to a WiFi network or to run as a hotspot.
 Then you need to use an Ethernet cable, an additional USB WiFi dongle, or a USB 4G/LTE modem to reach the internet.
 
-When using the hotspot, the detector will use the IP address 10.42.0.1 and then
+When using the hotspot mode, the detector will use the IP address 10.42.0.1 and then
 <http://10.42.0.1:8080> should be used to access the detectors user interface.
 
 ### USB stick or external SSH device
@@ -259,7 +266,7 @@ contains a yaml file with configuration parameters and the database used for set
 - **/home/wurb/wurb_logging**
 contains log files.
 
-- **/home/wurb/wurb_recordings** 
+- **/home/wurb/wurb_recordings**
 contains the recorded audio files.
 
 Configuration is mainly something that is loaded at startup
