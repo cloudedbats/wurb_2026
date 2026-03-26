@@ -3,24 +3,22 @@
 Welcome to the user manual for the Do-It-Yourself bat detector WURB-2026.
 
 This document describes how to run the bat detector and how the
-web based graphical user interface is organized.
-There is also a section for advanced users who want to modify the
-configuration file.
+graphical user interface is organized.
 
 Since the WURB detector is a DIY system you have to buy and assembly the
 hardware parts yourself, and also install the software needed.
+The detector is based on the Raspberry Pi minicomputer,
+and if you want to know about what hardware that can be used when building
+your own detector you should take a look in this document:
+[Raspberry Pi basics](./raspberry_pi_basics.md)
+
 The software and installation instruction can be found here:
 <https://github.com/cloudedbats/wurb_2026>
-
-The detector is based on the Raspberry Pi minicomputer.
-If you want to know more about all the possibilities that computer
-offer you should take a look in this document:
-[Raspberry Pi basics](./raspberry_pi_basics.md)
 
 ## How to start the user interface
 
 If the detector is built as described in the installation instructions,
-just plug in the power to start it. Then wait while it boots up.
+just plug in power to start it. Then wait while it boots up.
 The Raspberry Pi 5 has an on/off button, but earlier models do not,
 so these must be turned off by cutting the power.
 
@@ -188,7 +186,7 @@ they are stored.
 - **Detector - Power off**
 Three buttons will appear: "Shutdown", "Restart" and "Cancel".
 These choices will only work if the detector is running on a computer with
-the same operating system normally used on the Raspberry Pi.
+the Debian operating system that is normally used on the Raspberry Pi.
 
 #### 2. Status
 
@@ -206,10 +204,11 @@ This logging table displays the same information that can be found in the log
 files located in the detectors internal file system.
 Most useful are the rows that tells when sound is detected and the peak
 frequency/strength for that sound.
-This information will also be stored in the file names of the recorded files,
-but it may differ if a stronger sound was detected later before the file was stored.
+This frequency/strength information will also be stored in the file names of the
+recorded files, but it may differ if a stronger sound was detected after the
+triggering event.
 
-By pressing **Show status** some more info can be displayed in the info log table.
+By pressing **Show status** some more info can be displayed in the info log.
 
 #### 4. Detector time
 
@@ -246,28 +245,28 @@ This feature also makes it easy to use the detector for transect monitoring.
 In addition to the position being saved for each audio recording,
 there is also a file that is stored with the night's recordings where the
 position for each minute is noted.
+This minute log can also be found in the Excel report described below.
 
 <br clear="right"/>
 
 There are three different modes available:
 
-- **Default position**
+- **Default position.**
 Use this if you want to use the scheduler and/or tag the files without using
 a GPS receiver.
 It is recommended to use two or three decimals for manually entered positions
 to distinguish them from
 the more exact GPS received positions.
 
-- **GPS**
+- **GPS.**
 In this mode you will either get the position from the GPS unit,
 or the default position.
 Note that if the default position is set to 0.0/0.0 and the GPS fails
 to get a GPS position, then the scheduler will stop recordings.
 
-- **GPS or Last found GPS**
+- **GPS or Last found GPS.**
 This is probably the best alternative to use for many use cases.
 
-128
 In the detector settings you can define whether the "Last found GPS"
 should be saved from the last session or cleared at startup.
 If it is cleared the default position will be used as fallback position.
@@ -315,8 +314,8 @@ Either at fixed times or in relation to sunset, dusk, dawn and sunrise.
 This set of settings are normally not modified that often.
 Available settings are:
 
-- If date should automatically be added to the directory where recorded files
-are stored.
+- If date should automatically be added to the directory name where recorded
+files are stored.
 - The length of the recorded sound files. Valid values are 4 - 60 sec.
 - Recorded file type; Full Spectrum (FS) or Time Expansion (TE) where 10x is
 the only option.
@@ -326,7 +325,7 @@ that was used.
 For example 384 kHz in FS mode uses 38.4 kHz in TE mode. The sound will then be
 played in slow-motion.
 - If time should be set from GPS when using a Raspberry Pi.
-- If last found GPS value is to be cleared or reused from earlier session at startup.
+- If "Last found GPS" value is to be cleared or reused from earlier session at startup.
 - Then there are two buttons and a possibility to select the start-up
 configuration.
 The buttons **User default** and **Start-up** are used to save settings that
@@ -344,8 +343,8 @@ previous session or whether the "Start-up" settings should be used at start up.
 
 Here are some reasons why this module exists:
 
-- It is good to be able to check what was recorded
-immediately without having to wait until the next day.
+- It's nice to be able to check what was recorded right away without having to
+wait until the next day.
 - It is good to check that everything is okay before leaving the detector for
 the rest of the night.
 - If you are looking at a spectrogram, it is more efficient to make some notes
@@ -358,8 +357,8 @@ is particularly good to have.
 ### Navigation - sources, directories and files
 
 Here you can select where the recorded files are stored.
-Local is for files stored on the detectors micro SD card and USB-1/USB-2 are
-used for attached file storage units.
+"Local" is for files stored on the detectors micro SD card and "USB-1"/"USB-2"
+are used for attached file storage units.
 
 Then there is a list of directories, one for each monitoring night.
 And finally a list of recordings for the selected night.
@@ -413,7 +412,7 @@ Here you can remove files marked as "Q0" or "Not assigned".
 It is also possible to remove monitoring nights.
 
 Another more effective way to remove monitoring nights and files
-is described in the File management section below.
+is described in the "File management" section below.
 
 ### Excel report
 
@@ -550,7 +549,7 @@ Example part from the debug log file:
     : - Bat_Detector_USB_384kHz: USB Audio (hw:4,0)   MONO at 384000.0 Hz  
 
 Example part from the configuration file.
-The Bat_Detector is already there:
+The "Bat_Detector" is already there:
 
     cat /home/wurb/wurb_settings/wurb_config.yaml
 
