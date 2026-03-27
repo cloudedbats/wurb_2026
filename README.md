@@ -121,10 +121,11 @@ It provides an overview of both where and when activities have occurred.
 
 Before purchasing the hardware for your detector, it is recommended that you read
 this document:
-[WURB Raspberry Pi basics](./raspberry_pi_basics.md)
+
+[WURB Raspberry Pi basics](./docs/raspberry_pi_basics.md)
 
 Then there is a user manual that describes how to use the system:
-[WURB-2026 user manual](./wurb_user_manual.md)
+[WURB-2026 user manual](././docs/wurb_user_manual.md)
 
 ## Installation - Raspberry Pi
 
