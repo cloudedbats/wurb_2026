@@ -328,7 +328,10 @@ class GpsReader(object):
                         else:
                             # Compare detector time and GPS time.
                             datetime_utc = datetime.datetime.now(datetime.UTC)
-                            diff = self.gps_datetime_utc - datetime_utc
+                            gps_datetime_utc = self.gps_datetime_utc.replace(
+                                tzinfo=datetime.timezone.utc
+                            )
+                            diff = gps_datetime_utc - datetime_utc
                             diff_in_s = diff.total_seconds()
                             if abs(diff_in_s) > self.max_time_diff_s:
                                 # Set detector unit time.

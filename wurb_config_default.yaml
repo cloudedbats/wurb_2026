@@ -90,6 +90,8 @@ gps_reader:
   adjust_detector_time: true
   accepted_detector_time_diff_s: 60
   gps_device_whitelist:
+    - /dev/ttyACM0 # Commonly used on Raspberry Pi.
+    - /dev/ttyUSB0 # Commonly used on Raspberry Pi.
     - 1546:01A8 # Vendor:Product used by "u-blox GNSS receiver".
     - 067B:2303 # Vendor:Product used by "BU-353" and "BU-353S4".
     - USB # Fallback for most other USB GPS dongles.
