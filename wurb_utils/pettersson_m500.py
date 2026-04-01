@@ -100,8 +100,11 @@ class PetterssonM500:
 
             # Use executor for the IO-blocking part.
             self.main_loop = asyncio.get_event_loop()
-            self.capture_executor = self.main_loop.run_in_executor(
-                None, self.run_capture
+            # self.capture_executor = self.main_loop.run_in_executor(
+            #     None, self.run_capture
+            # )
+            self.capture_executor = asyncio.create_task(
+                self.run_capture(), name="M500 Sound capture task"
             )
         except Exception as e:
             message = "PetterssonM500 - start. Exception: " + str(e)
@@ -122,7 +125,7 @@ class PetterssonM500:
             message = "PetterssonM500 - stop. Exception: " + str(e)
             self.logger.debug(message)
 
-    def run_capture(self):
+    async def run_capture(self):
         """ """
         if self.pettersson_m500 == None:
             return
@@ -136,7 +139,6 @@ class PetterssonM500:
             self.logger.debug(message)
             return
 
-        pmc_capture = None
         self.capture_is_active = True
         try:
             self.logger.debug("PetterssonM500 - Sound capture started.")
@@ -149,6 +151,9 @@ class PetterssonM500:
             time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
             # Empty numpy buffer.
             in_buffer_int16 = numpy.array([], dtype=numpy.int16)
+            #
+            await asyncio.sleep(0)
+            #
             # Loop.
             while self.capture_is_active:
                 # Read from capture device.
@@ -198,6 +203,12 @@ class PetterssonM500:
                                     # Terminate.
                                     self.capture_is_active = False
                                     break
+                            await asyncio.sleep(0)
+                        await asyncio.sleep(0)
+                    await asyncio.sleep(0)
+                await asyncio.sleep(0)
+            #
+            await asyncio.sleep(0)
         #
         except asyncio.CancelledError:
             self.logger.debug("PetterssonM500 - Was cancelled.")
@@ -207,10 +218,8 @@ class PetterssonM500:
         finally:
             self.logger.debug("PetterssonM500 - Capture ended.")
             self.capture_is_active = False
-            if pmc_capture:
-                pmc_capture.close()
-            #
-            self.pettersson_m500.stop_stream()
-            self.pettersson_m500.reset()
-            #
+            # #
+            # self.pettersson_m500.stop_stream()
+            # self.pettersson_m500.reset()
+            # #
             self.capture_is_running = False

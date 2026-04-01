@@ -257,6 +257,20 @@ these USB devices are accessible and named like "media_path: /media/USB-sda1".
 
 These will be automatically mounted when connected, but please turn off the detector before removing them.
 
+### Pettersson M500 (the 500 kHz version)
+
+This is needed if you are planning to use the **Pettersson M500** USB microphone.
+The reason is that the 500 kHz version is not recognised by the detector as a 
+normal sound card and permissions for USB communication must be set.
+
+    cd /home/wurb/wurb_2026
+    sudo cp raspberrypi_files/pettersson_m500_batmic.rules /etc/udev/rules.d/
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+
+Also note that there may be problems with some versions of Raspberry Pi when using 
+this microphone. Please contact me if you have problems.
+
 ## Configuration, logging and recorded files
 
 There are three directories with useful content when using the WURB-2026.
