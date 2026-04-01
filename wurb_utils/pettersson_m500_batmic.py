@@ -49,12 +49,10 @@ class PetterssonM500BatMic(object):
 
     def is_available(self):
         """Returns True if available."""
-        self.clear()
-        self.device = usb.core.find(idVendor=0x287D, idProduct=0x0146)
-        if self.device:
+        device = usb.core.find(idVendor=0x287D, idProduct=0x0146)
+        if device:
             return True
         else:
-            self.clear()
             return False
 
     def reset(self):
