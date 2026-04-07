@@ -12,13 +12,11 @@ import usb.core
 
 
 class PetterssonM500BatMic(object):
-    """Class used for control of the Pettersson M500 USB Ultrasound Microphone.
+    """Class used for the Pettersson M500 USB Ultrasound Microphone.
     More info at http://batsound.com/
 
     Normally the M500 should be accessed from Windows systems, but this class
     makes it possible to call it from Linux.
-
-    Installation instructions for pyusb: https://github.com/walac/pyusb
 
     Since pyusb access hardware directly 'udev rules' must be created.
     During test it is possible to run it as a 'sudo' user. Example for
@@ -29,12 +27,10 @@ class PetterssonM500BatMic(object):
       Go to: /etc/udev/rules.d/
       and add a file called: pettersson_m500_batmic.rules
       containing the following row:
-      SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", MODE="0664", GROUP="m500batmic"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="287d", ATTR{idProduct}=="0146", GROUP="wurb", MODE="0664"
 
-      Then add the usergroup m500batmic to the user.
-
-    More info about adding 'udev rules':
-    http://stackoverflow.com/questions/3738173/why-does-pyusb-libusb-require-root-sudo-permissions-on-linux
+    More info about adding 'udev rules' for pyusb:
+    https://github.com/pyusb/pyusb/blob/master/docs/faq.rst
     """
 
     def __init__(self):
@@ -53,17 +49,6 @@ class PetterssonM500BatMic(object):
         if device:
             return True
         else:
-            return False
-
-    def reset(self):
-        """Returns True if available."""
-        self.device = usb.core.find(idVendor=0x287D, idProduct=0x0146)
-        if self.device:
-            self.device.reset()
-            self.clear()
-            return True
-        else:
-            self.clear()
             return False
 
     def start_stream(self):
@@ -89,9 +74,17 @@ class PetterssonM500BatMic(object):
             # Vendor and product number for Pettersson M500.
             self.device = usb.core.find(idVendor=0x287D, idProduct=0x0146)
             if self.device:
-                # Use first configuration.
-                self.device.set_configuration()
+                # Don't call set_configuration if it is already set.
+                # More info: https://github.com/pyusb/pyusb/blob/master/docs/faq.rst
+                try:
+                    cfg = self.device.get_active_configuration()
+                except usb.core.USBError:
+                    cfg = None
+                if cfg is None:
+                    self.device.set_configuration()
+
                 configuration = self.device.get_active_configuration()
+                # print(configuration.bConfigurationValue)
                 interface = configuration[(0, 0)]
                 # List all endpoints.
                 #         decriptors = usb.util.find_descriptor(interface, find_all=True)

@@ -24,8 +24,6 @@ class PetterssonM500:
         self.pettersson_m500 = None
         if platform.system() == "Linux":
             self.pettersson_m500 = pettersson_m500_batmic.PetterssonM500BatMic()
-            self.pettersson_m500.stop_stream()
-            self.pettersson_m500.reset()
 
     def clear(self):
         # Specific for M500.
@@ -117,7 +115,6 @@ class PetterssonM500:
         try:
             self.capture_is_active = False
             self.pettersson_m500.stop_stream()
-            self.pettersson_m500.reset()
             if self.capture_executor != None:
                 self.capture_executor.cancel()
                 self.capture_executor = None
@@ -219,7 +216,6 @@ class PetterssonM500:
             self.logger.debug("PetterssonM500 - Capture ended.")
             self.capture_is_active = False
             # #
-            # self.pettersson_m500.stop_stream()
-            # self.pettersson_m500.reset()
-            # #
+            self.pettersson_m500.stop_stream()
+            #
             self.capture_is_running = False
