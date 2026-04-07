@@ -94,6 +94,7 @@ class PetterssonM500:
                 self.logger.debug(
                     "PetterssonM500 - Start: Capture is running, waiting 2 sec... "
                 )
+                await self.stop()
                 await asyncio.sleep(2.0)
 
             # Use executor for the IO-blocking part.
@@ -217,5 +218,6 @@ class PetterssonM500:
             self.capture_is_active = False
             # #
             self.pettersson_m500.stop_stream()
+            self.pettersson_m500.clear()
             #
             self.capture_is_running = False
