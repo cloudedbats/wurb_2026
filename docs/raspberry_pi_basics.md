@@ -19,12 +19,21 @@ recommended components/accessories, and finally some tips for troubleshooting.
 
 ## What is Raspberry Pi?
 
+<p align="center">
+<img width="100%" height="auto" src="../images/Wurb-RPi-3-4-5.jpg">
+</p>
+
+Image: Three models of Raspberry Pi.
+From left: Raspberry Pi 3B+ inside a case,
+Raspberry Pi 4 on top of a transparent case,
+and finally Raspberry Pi 5 inside a case and with heat sinks attached.
+
 Raspberry Pi is a small (size as a credit card) single-board computer that has
 become very popular among people who build their own systems.
 Although it is small and cheap, it contains all the capabilities of a much more
-expensive desktop or server computer.
+expensive desktop or server computer, but with a limited computing speed.
 
-In addition to the computer itself, a very large market has emerged for additional
+In addition to the computer itself, a large market has emerged for additional
 accessories that are specifically aimed at DIY projects. In parallel with this,
 there is of course also a very large and committed community.
 
@@ -57,9 +66,9 @@ needed, and adapters from 12V to 5V are easy to find if needed.
 In this project, one goal has been to not require soldering or connections via
 the 40-pin header when building your own detector.
 USB-connected devices are prioritized and these should be automatically identified
-by the software when connected. An exception is the camera sensors used in WIRC
-because they are connected with a flat cable (called "FPC Camera Cable") to special
-camera connectors on the Raspberry Pi board.
+by the software when connected. An exception is the camera sensors used in the WIRC
+system because they are connected with a flat cable (called "FPC Camera Cable")
+to special camera connectors on the Raspberry Pi board.
 
 ## Recommendations
 
@@ -69,8 +78,8 @@ camera connectors on the Raspberry Pi board.
 I have had these both as mobile detectors and as stationary detectors where they
 have been up all year round without problems. However,
 the microphones can be sensitive to damp weather and other damage.
-It also handles variations in power supply significantly better than its
-successor RPi 5.
+Raspberry Pi 4 also handles variations in power supply significantly better than
+its successor RPi 5.
 
 **Raspberry Pi 3B** also works but the processor is slower and you may encounter
 gaps in the recordings if the processor is busy with other things such as creating
@@ -108,7 +117,7 @@ use the 4GB versions of Raspberry Pi 4.
 In these computers, micro SD cards are normally used instead of a hard drive
 or SSD disk. The micro SD card is used both for installing the operating system,
 various software such as WURB and WIRC and for user data.
-Most relatively fast SD cards should work.
+Most relatively fast micro SD cards should work.
 I usually use **SanDisk Extreme PRO microSDXC**. The size 64 GB is enough for
 most applications, even if you save the recorded audio files on this card.
 Be careful when buying these because the price can vary greatly.
@@ -119,17 +128,17 @@ Raspberry Pi 3B+ and older use micro-USB for power supply.
 Raspberry Pi 4 and later use USB-C.
 
 For Raspberry Pi 5, it should be a USB-C PD so that it can automatically figure
-out how much the power supply can deliver. More information can be found later
-in the document in the troubleshooting section.
+out how much the power supply can deliver.
+At least USB-C PD with 5A at 5V is needed.
 
 In cases where you want to supply power from 12V, there are two options.
 One way is to use a 12V to 5V adapter that you normally use in your car.
 Another is to get a HAT (Hardware-At-Top) which can often convert an input
-voltage between 6V and 30V.
+voltage between 6V and 30V to 5V for the Raspberry Pi.
 
 Another option is PoE, Power-over-Ethernet. One advantage is that you get both
 network and power in the same cable and these usually work over long distances,
-such as 50-100m.
+such as 50-100m without a repeater.
 Then you need one PoE injector and one PoE splitter.
 For the PoE splitter part there are also HAT cards for Raspberry Pi available.
 
@@ -151,38 +160,56 @@ If there are real sounds above the Nyquist frequency (half the sampling frequenc
 an "anti aliasing" filter is needed to handle this. Unfortunately,
 not all ultrasonic microphones on the market have this type of filter.
 
-TODO...IMAGE...
+<p align="center">
+<img width="100%" height="auto" src="../images/Wurb-microphones.jpg">
+</p>
 
 The ultrasonic microphones that are automatically identified by the WURB software
 are those shown in the image. From left they are:
 
-1. **Pettersson u384 and u256** Older versions have micro-USB and newer ones
+1. **Pettersson M500** This is the only 500 kHz that is supported by WURB.
+The communication protocol is specially designed for this model and
+it will not be recognized as a normal sound device when connected to other devices.
+2. **Pettersson M500-384** Acoustically this model is similar to M500,
+but it is running at 384 kHz and uses the standard sound card protocol for
+communication.
+3. **Pettersson u384 and u256** Older versions have micro-USB and newer ones
 have USB-C.
-2. **Pettersson M500-384** Not that there is a problem when using this model
-and Raspberry Pi 4. Check the troubleshooting section below.
-3. **Dodotronic**, various models are directly supported.
-4. **AudioMoth** with the microphone firmware installed (<https://www.openacousticdevices.info/usb-microphone>).
+4. **AudioMoth** with the microphone firmware installed
+(<https://www.openacousticdevices.info/usb-microphone>)
+is supported.
 5. Some models in the **Pipistrelle family** (<https://www.pippyg.com>) are
 supported. For example "Griff" and "Griff Mini".
+6. **Dodotronic**, various models from Dodotronic are directly supported
+and this is an example of a 384 kHz microphone.
+7. **Various experimental microphones** can also be used as long as they can be
+recognized as a sound card. In this example an adapter from a 3.5 mm headset
+connector to USB is used together with an attached MEMS microphone.
 
 Other sound cards with a USB connector can be used, but then you have to add
 them to the system's configuration file. See the user manuals advanced section
 for more information.
+
+## Optional accessories
+
+<p align="center">
+<img width="100%" height="auto" src="../images/Wurb-optional.jpg">
+</p>
+
+From left to right.
 
 ### GPS units
 
 The most important metadata for a recorded audio file is when and where.
 Without this information, the audio file is basically useless in many contexts.
 WURB therefore supports GPS devices and GPS can deliver both time and position.
-These values ​​are then included in the filename of each audio file.
+These values ​​are then included in the filename of each recorded audio file.
 
 This is especially useful when the detector is used for transect inventory or
-when the detector is placed out at new locations every night.
+when the detector is deployed at new locations each night.
 Since Raspberry Pi does not normally have a built-in RTC, Real-time-clock,
 using a GPS device is an option to automatically set the time as soon as the
 device has found a sufficient number of satellites.
-
-TODO...IMAGE...
 
 These USB devices will hopefully be automatically recognized when plugged in.
 If not, there is an instruction in the user manuals advanced section.
@@ -207,7 +234,7 @@ Note that there is a limit of 2 TB for FAT32 that can be tricky to exceed.
 The software in WURB supports two USB devices and detects when these are full
 and then switches to the next one.
 If they are full or not connected, the files will then be stored on the
-detector's SD card.
+detector's micro SD card.
 
 The audio files from monitored nights always end up in a directory named
 "wurb_recordings". If WIRC is used, the video files will end up in a corresponding

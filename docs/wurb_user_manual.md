@@ -10,7 +10,7 @@ hardware parts yourself, and also install the software needed.
 The detector is based on the Raspberry Pi minicomputer,
 and if you want to know about what hardware that can be used when building
 your own detector you should take a look in this document:
-[Raspberry Pi basics](./raspberry_pi_basics.md)
+[Raspberry Pi basics](https://github.com/cloudedbats/wurb_2026/blob/main/docs/raspberry_pi_basics.md)
 
 The software and installation instruction can be found here:
 <https://github.com/cloudedbats/wurb_2026>
@@ -57,7 +57,7 @@ The address in the web browser should look like this:
 
 If the detector is remotely deployed there are different alternatives to access
 it on distance.
-Check the [Raspberry Pi basics](./raspberry_pi_basics.md)
+Check the [Raspberry Pi basics](https://github.com/cloudedbats/wurb_2026/blob/main/docs/raspberry_pi_basics.md)
 document and search for "Tailscale".
 
 ## The user interface
@@ -195,12 +195,12 @@ Each time a recording session is activated, then the detector will scan for
 connected microphones.
 The name of the used one will be displayed here.
 
-Check the [Raspberry Pi basics](./raspberry_pi_basics.md) document
-for a list of directly supported microphones.
+Check the [Raspberry Pi basics](https://github.com/cloudedbats/wurb_2026/blob/main/docs/raspberry_pi_basics.md)
+document for a list of directly supported microphones.
 
 #### 3. Info log /  show status
 
-This logging table displays the same information that can be found in the log
+This log table displays the same information that can be found in the log
 files located in the detectors internal file system.
 Most useful are the rows that tells when sound is detected and the peak
 frequency/strength for that sound.
@@ -254,15 +254,14 @@ There are three different modes available:
 - **Default position.**
 Use this if you want to use the scheduler and/or tag the files without using
 a GPS receiver.
-It is recommended to use two or three decimals for manually entered positions
-to distinguish them from
-the more exact GPS received positions.
+It is recommended to use up to four decimals for manually entered positions
+to distinguish them from the more exact GPS received positions.
 
 - **GPS.**
 In this mode you will either get the position from the GPS unit,
 or the default position.
-Note that if the default position is set to 0.0/0.0 and the GPS fails
-to get a GPS position, then the scheduler will stop recordings.
+Note that if the default position is set to latitude=0.0/longitude=0.0 and
+the GPS fails to get a GPS position, then the scheduler will stop recording.
 
 - **GPS or Last found GPS.**
 This is probably the best alternative to use for many use cases.
@@ -348,7 +347,8 @@ wait until the next day.
 - It is good to check that everything is okay before leaving the detector for
 the rest of the night.
 - If you are looking at a spectrogram, it is more efficient to make some notes
-immediately. For example, junk recordings can be marked as Q0 and deleted immediately.
+immediately. For example, junk recordings can be marked as Q0 and deleted
+in the Administration module.
 - For stationary detectors that can be accessed remotely, this feature
 is particularly good to have.
 
@@ -388,7 +388,7 @@ There are some shortcuts available that are handy to have.
 <img align="right" width="50%" height="auto" src="../images/7_administration.png">
 </p>
 
-The Annotations module is focusing on single recorded files.
+The previously described Annotations module is focusing on single recorded files.
 
 In this Administration module focus is on recording nights,
 and the goal is to give an overview of each night.
@@ -449,7 +449,7 @@ the IP address 10.42.0.1 if it is accessed in hotspot mode.
 
 <br clear="right"/>
 
-Then there are three directories located at the detectors SD card
+Then there are three directories located at the detectors micro SD card
 that are of interest:
 
 - /home/wurb/wurb_recordings
@@ -627,7 +627,7 @@ If there still are problems, then I recommend a complete reinstallation.
 This should always be done when there are new major releases of the
 Debian operation system.
 
-## And finally...
+## And finally
 
 If you find a solution to a problem, let me know.
 If it was a problem for you, it will probably be a problem for

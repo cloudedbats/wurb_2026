@@ -122,10 +122,10 @@ It provides an overview of both where and when activities have occurred.
 Before purchasing the hardware for your detector, it is recommended that you read
 this document:
 
-[WURB Raspberry Pi basics](./docs/raspberry_pi_basics.md)
+[WURB Raspberry Pi basics](https://github.com/cloudedbats/wurb_2026/blob/main/docs/raspberry_pi_basics.md)
 
 Then there is a user manual that describes how to use the system:
-[WURB-2026 user manual](././docs/wurb_user_manual.md)
+[WURB-2026 user manual](https://github.com/cloudedbats/wurb_2026/blob/main/docs/wurb_user_manual.md)
 
 ## Installation - Raspberry Pi
 
@@ -157,7 +157,7 @@ If you plan to use more than one, it is a good idea to change it.
 
 ### Installation on Raspberry Pi
 
-Move the microSD card and slide it into the Raspberry Pi and connect power.
+Move the micro SD card and slide it into the Raspberry Pi and connect power.
 
 It is important that the Raspberry Pi is connected to your local network,
 either via WiFi or modem cable.
@@ -260,7 +260,7 @@ These will be automatically mounted when connected, but please turn off the dete
 ### Pettersson M500 (the 500 kHz version)
 
 This is needed if you are planning to use the **Pettersson M500** USB microphone.
-The reason is that the 500 kHz version is not recognised by the detector as a 
+The reason is that the 500 kHz version is not recognised by the detector as a
 normal sound card and permissions for USB communication must be set.
 
     cd /home/wurb/wurb_2026
@@ -268,7 +268,7 @@ normal sound card and permissions for USB communication must be set.
     sudo udevadm control --reload-rules
     sudo udevadm trigger
 
-Also note that there may be problems with some versions of Raspberry Pi when using 
+Also note that there may be problems with some versions of Raspberry Pi when using
 this microphone. Please contact me if you have problems.
 
 ## Configuration, logging and recorded files
