@@ -14,8 +14,8 @@ Software and installation instructions for WURB and WIRC can be found here:
 - <https://github.com/cloudedbats/wirc_2026>
 
 In this document I have collected some basic information about the hardware parts
-used in the WURB detector, experiences about what I think works well,
-recommended components/accessories, and finally some tips for troubleshooting.
+used in the WURB detector, experiences about what I think works well and
+recommended components/accessories.
 
 ## What is Raspberry Pi?
 
@@ -47,7 +47,7 @@ If you are not familiar with the Linux operating system and the basics of how to
 use a terminal window, I recommend that you ask for help from someone with this
 knowledge.
 This knowledge is only necessary when installing the software on your detector,
-when troubleshooting, and when you want to update the program code to the
+when troubleshooting, and if you want to update the program code to the
 latest version.
 
 ## Why Raspberry Pi for bat monitoring?
@@ -119,12 +119,12 @@ or SSD disk. The micro SD card is used both for installing the operating system,
 various software such as WURB and WIRC and for user data.
 Most relatively fast micro SD cards should work.
 I usually use **SanDisk Extreme PRO microSDXC**. The size 64 GB is enough for
-most applications, even if you save the recorded audio files on this card.
+most applications, even if you save the recorded audio files on the micro SD card.
 Be careful when buying these because the price can vary greatly.
 
 ### Power Supply
 
-Raspberry Pi 3B+ and older use micro-USB for power supply.
+Raspberry Pi 3B+ and older models use micro-USB for power supply.
 Raspberry Pi 4 and later use USB-C.
 
 For Raspberry Pi 5, it should be a USB-C PD so that it can automatically figure
@@ -144,7 +144,7 @@ For the PoE splitter part there are also HAT cards for Raspberry Pi available.
 
 This calculation shows approximately for how long a detector can be powered by
 a power bank.
-A good rule of thumb is that a Raspberry Pi draws approximately 5W of power,
+A good rule of thumb is that a Raspberry Pi draws 5W of power,
 which is equal to 1A at 5V.
 A 20000 mAh power bank contains energy according to this calculation
 20Ah * 3.6V = 72Wh. So 72Wh / 5W = 14.4 hours.
@@ -196,11 +196,12 @@ for more information.
 <img width="100%" height="auto" src="../images/Wurb-optional.jpg">
 </p>
 
-From left to right.
+Image, from left to right.
+Two GPS units, a USB memory stick, an extra WiFi dongle and a 4G/LTE modem.
 
 ### GPS units
 
-The most important metadata for a recorded audio file is when and where.
+The most important metadata for a recorded audio file is **when** and **where**.
 Without this information, the audio file is basically useless in many contexts.
 WURB therefore supports GPS devices and GPS can deliver both time and position.
 These values ​​are then included in the filename of each recorded audio file.
@@ -298,8 +299,8 @@ as a WiFi hotspot.
 Then it is easy to connect to it from a mobile phone to run the user interface
 when out in the field.
 
-In this case ".local" should not be used. Use this instead for SSH and for the
-web addresses to the user interfaces:
+In this case an IP address should be used.
+Examples for how to connect with SSH and to the web pages for WURB and WIRC:
 
     ssh wurb@wurb01
     http://wurb01:8080
@@ -346,7 +347,7 @@ and I have used them a lot.
 It is also possible to use a normal internet modem with 4G/LTE and then connect
 to that one with a modem cable or WiFi.
 
-Tailscale can also be used here.
+Tailscale can also be used when 4G/LTE is used.
 
 ### Bluetooth
 
@@ -369,7 +370,7 @@ For Windows users there is a similar software called **WinSCP**.
 Connect with:
 
     Protocol: SFTP
-    Host: wurb01     (or "wurb01.local" if on your local network)
+    Host: wurb01     (or "wurb01.local", "10.42.0.1")
     User: wurb
     Password: your-secret-password
 
@@ -386,15 +387,37 @@ In summary, look here for the recorded sound files:
 
 ## Tailscale, or similar tunneling techniques
 
-TODO...
+The normal way to set up a computer as a server for external access is that you
+have either a dynamic or static IP address.
+Then you use, for example, nginx or Caddy to protect your server with logins etc.
 
-## ADVANCED TOPICS
+This does not work if the detector is connected to internet via someones WiFi
+or if it is using 4G/LTE for internet access.
+Reverse SSH tunneling can be used to access a remotely deployed detector,
+but it is quite tricky to set up manually.
 
-TODO...
+In recent years, I have used Tailscale for this.
+With the help of Tailscale, I can connect to my detectors with SSH, HTTP and
+SFTP as soon as they are connected to the internet.
+It looks like they are all parts in my home network and I can access them like this
+(example where the detector hostname is wurb01):
 
-### Troubleshooting
+    SSH: ssh wurb@wurb01
+    HTTP for WURB: http:wurb01:8080
+    SFTP: Protocol: SFTP, port: 22, host: wurb01, user: wurb, password: same-as-for-ssh
 
-TODO...
+In some cases DNS for the device hostname does not work,
+but Tailscale also provide an internal IP number for access.
+It is also possible to share a detector with some other Tailscale users.
+
+What you have to do is this.
+Get an account on Tailscale, the free account allows for up to 100 devices.
+Then download the software to your computer, mobile phone and other units that
+you want to include in your Tailscale network.
+
+Then install Tailscale on each detector.
+You can do this by selecting "Add device/Linux server" which creates a script
+that you then should run on the detector.
 
 ## Contact
 
