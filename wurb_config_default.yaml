@@ -12,12 +12,13 @@ audio_capture:
   - device_name: Bat_Detector
   - device_name: AudioMoth
     sampling_freq_hz: 384000
-  - device_name: USB2.0 Audio
-    sampling_freq_hz: 192000
-    channels: MONO-LEFT # From STEREO.
-  - device_name: USB Audio
-    sampling_freq_hz: 192000
-    channels: MONO-LEFT # From STEREO.
+  - device_name: Vleermic
+  # - device_name: USB2.0 Audio
+  #   sampling_freq_hz: 192000
+  #   channels: MONO-LEFT # From STEREO.
+  # - device_name: USB Audio
+  #   sampling_freq_hz: 192000
+  #   channels: MONO-LEFT # From STEREO.
   # - device_name: PART-OF-DEVICE-NAME
   #   sampling_freq_hz: 384000 # Adjust Settings-System-Sound if Windows.
   #   channels: MONO # MONO, MONO-LEFT, MONO-RIGHT.
