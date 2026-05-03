@@ -171,6 +171,23 @@ Start with an update/upgrade.
     sudo apt update
     sudo apt upgrade -y
 
+### Enable password-free sudo
+
+A security update for Raspberry Pi OS was released in April 2026 and
+password-free sudo is now disabled by default.
+For WURB users, this means that the option to turn off or restart
+the detector from the user interface no longer works.
+
+To enable password-free sudo, you can do so with the following command
+
+    sudo raspi-config
+
+Then select "System Options" and "Admin Password" to
+enable password-free sudo.
+
+Please note that this only affects Raspberry Pi OS images
+installed after mid-April 2026.
+
 ### Install the WURB-2026 detector software
 
 Install the necessary Linux/Debian packages.
@@ -181,6 +198,7 @@ Install the necessary Linux/Debian packages.
 
 Install the WURB-2026 software.
 
+    cd /home/wurb
     git clone https://github.com/cloudedbats/wurb_2026.git
     cd wurb_2026/
     python -m venv venv
@@ -189,6 +207,7 @@ Install the WURB-2026 software.
 
 Install and enable the services that use WURB-2026.
 
+    cd /home/wurb/wurb_2026
     sudo cp raspberrypi_files/wurb_2026.service /etc/systemd/system/
     sudo systemctl daemon-reload
     sudo systemctl enable wurb_2026.service
@@ -208,9 +227,14 @@ it can be run in hotspot mode and activate its own WiFi network.
 In the example below, the WiFi name will be "WiFi-wurb01" and the password "chiroptera".
 Use different names to avoid conflicts if there are more detectors within range.
 
-    sudo nmcli con add con-name wurb-hotspot ifname wlan0 type wifi ssid WiFi-wurb01
+    wifi_hotspot_name = WiFi-wurb01
+    wifi_hotspot_password = chiroptera
+
+And then run this.
+
+    sudo nmcli con add con-name wurb-hotspot ifname wlan0 type wifi ssid $wifi_hotspot_name
     sudo nmcli con modify wurb-hotspot wifi-sec.key-mgmt wpa-psk
-    sudo nmcli con modify wurb-hotspot wifi-sec.psk chiroptera
+    sudo nmcli con modify wurb-hotspot wifi-sec.psk $wifi_hotspot_password
     # Define security protocol, etc.
     sudo nmcli con modify wurb-hotspot wifi-sec.proto rsn
     sudo nmcli con modify wurb-hotspot wifi-sec.pairwise ccmp
@@ -320,6 +344,7 @@ is replaced with "source venv/bin/activate".
 Depending on how Python is installed on your computer, you may need to
 specify the full path to Python.
 
+    cd /home/wurb
     git clone https://github.com/cloudedbats/wurb_2026.git
     cd wurb_2026/
     python3 -m venv venv
@@ -336,7 +361,7 @@ Launch a browser with the address <http://localhost:8080>.
 To build an executable "exe" file, run this
 (still inside the wurb_2026 directory with "venv" enabled).
 
-    pip install pyinstaller
+    cd /home/wurb/wurb_2026
     pyinstaller wurb_main_pyinstaller.spec
 
 The executable file will then be created in a directory called "dist".
