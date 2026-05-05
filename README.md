@@ -227,8 +227,8 @@ it can be run in hotspot mode and activate its own WiFi network.
 In the example below, the WiFi name will be "WiFi-wurb01" and the password "chiroptera".
 Use different names to avoid conflicts if there are more detectors within range.
 
-    wifi_hotspot_name = WiFi-wurb01
-    wifi_hotspot_password = chiroptera
+    wifi_hotspot_name=WiFi-wurb01
+    wifi_hotspot_password=chiroptera
 
 And then run this.
 
