@@ -97,11 +97,8 @@ class PetterssonM500:
                 await self.stop()
                 await asyncio.sleep(2.0)
 
-            # Use executor for the IO-blocking part.
+            # Create task.
             self.main_loop = asyncio.get_event_loop()
-            # self.capture_executor = self.main_loop.run_in_executor(
-            #     None, self.run_capture
-            # )
             self.capture_executor = asyncio.create_task(
                 self.run_capture(), name="M500 Sound capture task"
             )
@@ -115,7 +112,8 @@ class PetterssonM500:
             return
         try:
             self.capture_is_active = False
-            self.pettersson_m500.stop_stream()
+            # self.pettersson_m500.stop_stream()
+            # await asyncio.sleep(1.0)
             if self.capture_executor != None:
                 self.capture_executor.cancel()
                 self.capture_executor = None
@@ -129,8 +127,12 @@ class PetterssonM500:
             return
         try:
             self.stream_time_s = time.time()
-            self.pettersson_m500.start_stream()
-            self.pettersson_m500.led_on()
+            result = self.pettersson_m500.start_stream()
+            if result == False:
+                return
+            result = self.pettersson_m500.led_on()
+            if result == False:
+                return
         except Exception as e:
             # Logging error.
             message = "Failed to create stream (M500): " + str(e)
@@ -142,6 +144,8 @@ class PetterssonM500:
             self.logger.debug("PetterssonM500 - Sound capture started.")
             # Empty buffer.
             data = self.pettersson_m500.read_stream()
+            if data == False:
+                return
             # Prepare.
             self.capture_is_running = True
             # Time related.
@@ -156,6 +160,9 @@ class PetterssonM500:
             while self.capture_is_active:
                 # Read from capture device.
                 data = self.pettersson_m500.read_stream()
+                if data == False:
+                    return
+
                 if len(data) > 0:
                     # Convert from string-byte array to int16 array.
                     in_data_int16 = numpy.frombuffer(data, dtype=numpy.int16)
@@ -167,20 +174,33 @@ class PetterssonM500:
                         # Copy "mic_out_buffer_size" part and save remaining part.
                         data_int16 = in_buffer_int16[0 : self.mic_out_buffer_size]
                         in_buffer_int16 = in_buffer_int16[self.mic_out_buffer_size :]
+                        calculated_time_s += time_increment_s
+                        # Time rounded to half sec.
+                        device_time = int((calculated_time_s) * 2) / 2
 
                         # Put data on queues in the queue list.
                         for data_queue in self.out_queue_list:
-                            # Time rounded to half sec.
-                            calculated_time_s += time_increment_s
-                            device_time = int((calculated_time_s) * 2) / 2
+
                             # Used to detect time drift.
                             detector_time = time.time()
                             # Copy data.
                             data_int16_copy = data_int16.copy()
+
+                            # print(
+                            #     "adc_time:"
+                            #     + str(device_time)
+                            #     + "   detector_time:"
+                            #     + str(detector_time)
+                            #     + "   data-len:"
+                            #     + str(len(data_int16_copy))
+                            # )
+
                             # Put together.
                             data_dict = {
                                 "status": "data",
-                                "adc_time": device_time,
+                                # "adc_time": device_time,
+                                # "adc_time": calculated_time_s,
+                                "adc_time": detector_time,  # FOR TEST...
                                 "detector_time": detector_time,
                                 "data": data_int16_copy,
                             }
@@ -216,8 +236,8 @@ class PetterssonM500:
         finally:
             self.logger.debug("PetterssonM500 - Capture ended.")
             self.capture_is_active = False
-            # #
-            self.pettersson_m500.stop_stream()
-            self.pettersson_m500.clear()
-            #
+            try:
+                self.pettersson_m500.stop_stream()
+            except:
+                pass
             self.capture_is_running = False
