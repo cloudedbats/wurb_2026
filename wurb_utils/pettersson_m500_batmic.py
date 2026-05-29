@@ -111,13 +111,30 @@ class PetterssonM500BatMic(object):
                 return False
         except Exception as e:
             print("PetterssonM500BatMic: Exception in init_sound_card: ", e)
+            self.endpoint_in = None
             return False
+
+    # def detach_sound_card(self):
+    #     """ """
+    #     try:
+    #         # Vendor and product number for Pettersson M500.
+    #         device = usb.core.find(idVendor=0x287D, idProduct=0x0146)
+    #         interface = 0
+    #         if device:
+    #             if device.is_kernel_driver_active(interface):
+    #                 print("PetterssonM500BatMic: Kernel driver is active.")
+    #                 device.detach_kernel_driver(interface)
+    #                 print("PetterssonM500BatMic: Kernel driver is detached.")
+    #     except Exception as e:
+    #         print("PetterssonM500BatMic: Exception in detach_sound_card: ", e)
 
     def read_stream(self):
         """Returns empty list if not ok."""
         try:
             if not self.endpoint_in:
-                self.init_sound_card()
+                result = self.init_sound_card()
+                if result == False:
+                    return False
             if self.endpoint_in:
                 # Buffer must be an exponent of 2.
                 # buffer = self.endpoint_in.read(0x10000, 2000) # Size = 65536, timeout = 2 sec.
@@ -127,10 +144,11 @@ class PetterssonM500BatMic(object):
                 # buffer = self.endpoint_in.read(0x40000, 4000) # Size = 262144, timeout = 2 sec.
                 return buffer
             else:
-                return array.array("B")  # Empty array.
+                return False
         except Exception as e:
-            # print("PetterssonM500BatMic: Exception in read_stream: ", e)
-            return array.array("B")  # Empty array.
+            print("PetterssonM500BatMic: Exception in read_stream: ", e)
+            self.endpoint_in = None
+            return False
 
     def send_command(self, command):
         """Commands: '01': Stream on, '02': LED flash, '03': LED on, '04': Stream off.
@@ -138,7 +156,9 @@ class PetterssonM500BatMic(object):
         """
         try:
             if not self.endpoint_in:
-                self.init_sound_card()
+                result = self.init_sound_card()
+                if result == False:
+                    return False
             if self.endpoint_in:
                 # Build command string.
                 cmd_string = "4261744d6963"  # Signature: ASCII for 'BatMic'.
@@ -162,6 +182,7 @@ class PetterssonM500BatMic(object):
                 return False
         except Exception as e:
             print("PetterssonM500BatMic: Exception in send_command: ", e)
+            self.endpoint_in = None
             return False
 
 
