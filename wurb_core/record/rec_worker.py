@@ -57,10 +57,11 @@ class RecWorker(object):
             # Create queues.
             if self.from_source_queue == None:
                 self.from_source_queue = asyncio.Queue(maxsize=self.queue_max_size)
-                if device_name == "Pettersson M500 (500kHz)":
-                    wurb_core.m500.add_out_queue(self.from_source_queue)
-                else:
-                    wurb_core.audio_capture.add_out_queue(self.from_source_queue)
+                # For Pettersson M500 (500kHz).
+                wurb_core.m500.add_out_queue(self.from_source_queue)
+                # For all other audio cards.
+                wurb_core.audio_capture.add_out_queue(self.from_source_queue)
+
             if self.to_target_queue == None:
                 self.to_target_queue = asyncio.Queue(maxsize=self.queue_max_size)
             # # Clear queues.
