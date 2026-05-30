@@ -128,27 +128,27 @@ class PetterssonM500BatMic(object):
     #     except Exception as e:
     #         print("PetterssonM500BatMic: Exception in detach_sound_card: ", e)
 
-    def read_stream(self):
+    def read_stream(self, buffer_length=0x20000, timeout_ms=500):
         """Returns empty list if not ok."""
         try:
             if not self.endpoint_in:
                 result = self.init_sound_card()
                 if result == False:
-                    return False
+                    return False, None
             if self.endpoint_in:
                 # Buffer must be an exponent of 2.
                 # buffer = self.endpoint_in.read(0x10000, 2000) # Size = 65536, timeout = 2 sec.
-                buffer = self.endpoint_in.read(
-                    0x20000, 2000
-                )  # Size = 131072, timeout = 2 sec.
-                # buffer = self.endpoint_in.read(0x40000, 4000) # Size = 262144, timeout = 2 sec.
-                return buffer
+                buffer = self.endpoint_in.read(buffer_length, timeout_ms)
+
+                # Get time as near source as possible.
+                buffer_read_time = time.time()
+
+                return buffer, buffer_read_time
             else:
-                return False
+                return False, None
         except Exception as e:
             print("PetterssonM500BatMic: Exception in read_stream: ", e)
-            self.endpoint_in = None
-            return False
+            return False, None
 
     def send_command(self, command):
         """Commands: '01': Stream on, '02': LED flash, '03': LED on, '04': Stream off.

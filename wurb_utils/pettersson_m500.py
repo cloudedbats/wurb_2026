@@ -143,9 +143,9 @@ class PetterssonM500:
         try:
             self.logger.debug("PetterssonM500 - Sound capture started.")
             self.capture_is_running = True
-            # Time related.
-            calculated_time_s = time.time()
-            time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
+            # # Time related.
+            # calculated_time_s = time.time()
+            # time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
             # Empty numpy buffer.
             in_buffer_int16 = numpy.array([], dtype=numpy.int16)
             #
@@ -154,13 +154,15 @@ class PetterssonM500:
             # Loop.
             while self.capture_is_active:
                 # Read from capture device.
-                data = self.pettersson_m500.read_stream()
+                data, buffer_read_time = self.pettersson_m500.read_stream()
                 if data == False:
                     await asyncio.sleep(0)
                     continue
                 if len(data) > 0:
                     # Convert from string-byte array to int16 array.
                     in_data_int16 = numpy.frombuffer(data, dtype=numpy.int16)
+                    # Save buffer lenght for time calculation.
+                    in_buffer_length = len(in_buffer_int16)
                     # Concatenate
                     in_buffer_int16 = numpy.concatenate(
                         (in_buffer_int16, in_data_int16)
@@ -169,7 +171,12 @@ class PetterssonM500:
                         # Copy "mic_out_buffer_size" part and save remaining part.
                         data_int16 = in_buffer_int16[0 : self.mic_out_buffer_size]
                         in_buffer_int16 = in_buffer_int16[self.mic_out_buffer_size :]
-                        calculated_time_s += time_increment_s
+
+                        # New time calculation based on latest buffer_read_time.
+                        calculated_time_s = buffer_read_time
+                        calculated_time_s -= in_buffer_length / self.sampling_freq_hz
+                        # calculated_time_s += time_increment_s
+
                         # Time rounded to half sec.
                         device_time = int((calculated_time_s) * 2) / 2
 
@@ -189,6 +196,8 @@ class PetterssonM500:
                             #     + "   data-len:"
                             #     + str(len(data_int16_copy))
                             # )
+                            # time_diff = detector_time - device_time
+                            # print("M500 Time-diff: ", str(time_diff))
 
                             # Put together.
                             data_dict = {
@@ -215,7 +224,6 @@ class PetterssonM500:
                                     self.capture_is_active = False
                                     break
                             await asyncio.sleep(0)
-                        await asyncio.sleep(0)
                     await asyncio.sleep(0)
                 await asyncio.sleep(0)
             #
