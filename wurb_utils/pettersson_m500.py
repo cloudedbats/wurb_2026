@@ -142,11 +142,6 @@ class PetterssonM500:
         self.capture_is_active = True
         try:
             self.logger.debug("PetterssonM500 - Sound capture started.")
-            # Empty buffer.
-            data = self.pettersson_m500.read_stream()
-            if data == False:
-                return
-            # Prepare.
             self.capture_is_running = True
             # Time related.
             calculated_time_s = time.time()
@@ -161,8 +156,8 @@ class PetterssonM500:
                 # Read from capture device.
                 data = self.pettersson_m500.read_stream()
                 if data == False:
-                    return
-
+                    await asyncio.sleep(0)
+                    continue
                 if len(data) > 0:
                     # Convert from string-byte array to int16 array.
                     in_data_int16 = numpy.frombuffer(data, dtype=numpy.int16)
@@ -198,9 +193,7 @@ class PetterssonM500:
                             # Put together.
                             data_dict = {
                                 "status": "data",
-                                # "adc_time": device_time,
-                                # "adc_time": calculated_time_s,
-                                "adc_time": detector_time,  # FOR TEST...
+                                "adc_time": device_time,
                                 "detector_time": detector_time,
                                 "data": data_int16_copy,
                             }
