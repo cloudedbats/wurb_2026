@@ -143,9 +143,10 @@ class PetterssonM500:
         try:
             self.logger.debug("PetterssonM500 - Sound capture started.")
             self.capture_is_running = True
-            # # Time related.
-            # calculated_time_s = time.time()
-            # time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
+            # Time related.
+            calculated_time_s = time.time()
+            last_used_calculated_time_s = calculated_time_s
+            time_increment_s = self.mic_out_buffer_size / self.sampling_freq_hz
             # Empty numpy buffer.
             in_buffer_int16 = numpy.array([], dtype=numpy.int16)
             #
@@ -161,21 +162,28 @@ class PetterssonM500:
                 if len(data) > 0:
                     # Convert from string-byte array to int16 array.
                     in_data_int16 = numpy.frombuffer(data, dtype=numpy.int16)
-                    # Save buffer lenght for time calculation.
-                    in_buffer_length = len(in_buffer_int16)
                     # Concatenate
                     in_buffer_int16 = numpy.concatenate(
                         (in_buffer_int16, in_data_int16)
                     )
+
+                    # Improved time calculation based on latest buffer_read_time.
+                    if buffer_read_time != None:
+                        calculated_time_s = buffer_read_time
+                        in_buffer_length = len(in_buffer_int16)
+                        calculated_time_s -= in_buffer_length / self.sampling_freq_hz
+
                     while len(in_buffer_int16) >= self.mic_out_buffer_size:
                         # Copy "mic_out_buffer_size" part and save remaining part.
                         data_int16 = in_buffer_int16[0 : self.mic_out_buffer_size]
                         in_buffer_int16 = in_buffer_int16[self.mic_out_buffer_size :]
 
-                        # New time calculation based on latest buffer_read_time.
-                        calculated_time_s = buffer_read_time
-                        calculated_time_s -= in_buffer_length / self.sampling_freq_hz
-                        # calculated_time_s += time_increment_s
+                        # Increment time.
+                        calculated_time_s += time_increment_s
+                        # # FOR TEST:
+                        # time_diff = calculated_time_s - last_used_calculated_time_s
+                        # print("++++++++++++++++++++ time_diff: ", time_diff)
+                        last_used_calculated_time_s = calculated_time_s
 
                         # Time rounded to half sec.
                         device_time = int((calculated_time_s) * 2) / 2
