@@ -71,10 +71,10 @@ async def load_record_page(request: fastapi.Request):
 # Schemas.
 class LocationSettings(BaseModel):
     geoSource: Optional[str] = None
-    latitudeDd: Optional[float] = None
-    longitudeDd: Optional[float] = None
-    defaultLatitudeDd: Optional[float] = None
-    defaultLongitudeDd: Optional[float] = None
+    latitudeDd: Optional[str] = None
+    longitudeDd: Optional[str] = None
+    defaultLatitudeDd: Optional[str] = None
+    defaultLongitudeDd: Optional[str] = None
 
 
 class DetectorSettings(BaseModel):
@@ -111,7 +111,7 @@ async def save_location(settings: LocationSettings):
     try:
         # Logging debug.
         logger.debug("API called: save-location.")
-        await wurb_core.wurb_settings.save_location(settings.dict())
+        await wurb_core.wurb_settings.save_location(settings.model_dump())
     except Exception as e:
         message = "API - save_location. Exception: " + str(e)
         logger.debug(message)
@@ -155,7 +155,7 @@ async def save_settings(settings: DetectorSettings):
     try:
         # Logging debug.
         logger.debug("API called: save-settings.")
-        await wurb_core.wurb_settings.save_settings(settings.dict())
+        await wurb_core.wurb_settings.save_settings(settings.model_dump())
     except Exception as e:
         message = "API - save_settings. Exception: " + str(e)
         logger.debug(message)
@@ -170,7 +170,7 @@ async def save_settings_user(settings: DetectorSettings):
         # Logging debug.
         logger.debug("API called: save-settings-user.")
         await wurb_core.wurb_settings.save_settings(
-            settings.dict(), settings_type="user-default"
+            settings.model_dump(), settings_type="user-default"
         )
     except Exception as e:
         message = "API - save_settings_user. Exception: " + str(e)
@@ -186,7 +186,7 @@ async def save_settings_startup(settings: DetectorSettings):
         # Logging debug.
         logger.debug("API called: save-settings-startup.")
         await wurb_core.wurb_settings.save_settings(
-            settings.dict(), settings_type="startup"
+            settings.model_dump(), settings_type="startup"
         )
     except Exception as e:
         message = "API - save_settings_startup. Exception: " + str(e)
