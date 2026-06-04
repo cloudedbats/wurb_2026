@@ -309,21 +309,27 @@ class WurbSettings(object):
                 value = location_db_dict.get(key, "")
                 value = value.replace(",", ".")
                 value = value.upper()
-                value_direction = 1.0
+                value_direction = None
+                # N, S, E, W overrides pos/neg values.
                 if key in ["latitudeDd", "defaultLatitudeDd"]:
                     if "N" in value:
                         value = value.replace("N", "")
+                        value_direction = 1.0
                     if "S" in value:
                         value = value.replace("S", "")
                         value_direction = -1.0
                 if key in ["longitudeDd", "defaultLongitudeDd"]:
                     if "E" in value:
                         value = value.replace("E", "")
+                        value_direction = 1.0
                     if "W" in value:
                         value = value.replace("W", "")
                         value_direction = -1.0
                 try:
-                    location_db_dict[key] = abs(float(value)) * value_direction
+                    if value_direction != None:
+                        location_db_dict[key] = abs(float(value)) * value_direction
+                    else:
+                        location_db_dict[key] = float(value)
                 except:
                     location_db_dict[key] = 0.0
 
@@ -424,9 +430,9 @@ class WurbSettings(object):
                 result += "<br>"
                 result += "12.3, -12.3, 12,3456, -12,3456"
                 result += "<br>"
-                result += "Latitude: N12.34, S12.34"
+                result += "Lat: N12.34, S12.34"
                 result += "<br>"
-                result += "Longitude: E12.34, W12.34"
+                result += "Long: E12.34, W12.34"
                 return result
 
         lat, long = self.get_valid_location()
@@ -437,12 +443,12 @@ class WurbSettings(object):
             if geo_source == "geo-gps":
                 if wurb_core.gps_reader:
                     no_of_satellites = wurb_core.gps_reader.get_number_of_satellites()
-                    result = "Latitude: " + str(lat) + " Longitude: " + str(long)
+                    result = "Lat: " + str(lat) + " Long: " + str(long)
                     result += "<br>"
                     result += "Number of satellites: " + str(no_of_satellites)
                     return result
             else:
-                return "Latitude: " + str(lat) + " Longitude: " + str(long)
+                return "Lat: " + str(lat) + " Long: " + str(long)
 
     def get_location_dict(self):
         """ """
