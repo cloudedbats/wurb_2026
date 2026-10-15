@@ -145,6 +145,9 @@ function updateMap() {
             meanLong = sumLong / counterLong;
         }
     }
+    // Trigger update when hidden container is used.
+    leafletMap.invalidateSize()
+    // Move to the monitored position on map.
     leafletMap.flyTo(new L.LatLng(meanLat, meanLong));
 }
 

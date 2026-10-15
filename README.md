@@ -175,15 +175,20 @@ Start with an update/upgrade.
 
 A security update for Raspberry Pi OS was released in April 2026 and
 password-free sudo is now disabled by default.
-For WURB users, this means that the option to turn off or restart
-the detector from the user interface no longer works.
 
-To enable password-free sudo, you can do so with the following command
+For WURB users, this means that the option to turn off or restart the
+detector from the user interface will no longer work.
+Setting the detectors date and time from the user interface or via a
+connected GPS dongle will also fail.
+
+To disable the need for a sudo password,
+you can do this with the following command:
 
     sudo raspi-config
 
-Then select "System Options" and "Admin Password" to
-enable password-free sudo.
+Then select "System Options" and "Admin Password".
+And finally select "No" in response to
+"Would you like the admin (sudo) password to be enabled?".
 
 Please note that this only affects Raspberry Pi OS images
 installed after mid-April 2026.
