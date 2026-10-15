@@ -299,6 +299,40 @@ class WurbSettings(object):
                 if value is not None:
                     location_db_dict[key] = value
 
+            # Convert positions from str to float.
+            for key in [
+                "latitudeDd",
+                "longitudeDd",
+                "defaultLatitudeDd",
+                "defaultLongitudeDd",
+            ]:
+                value = location_db_dict.get(key, "")
+                value = value.replace(",", ".")
+                value = value.upper()
+                value_direction = None
+                # N, S, E, W overrides pos/neg values.
+                if key in ["latitudeDd", "defaultLatitudeDd"]:
+                    if "N" in value:
+                        value = value.replace("N", "")
+                        value_direction = 1.0
+                    if "S" in value:
+                        value = value.replace("S", "")
+                        value_direction = -1.0
+                if key in ["longitudeDd", "defaultLongitudeDd"]:
+                    if "E" in value:
+                        value = value.replace("E", "")
+                        value_direction = 1.0
+                    if "W" in value:
+                        value = value.replace("W", "")
+                        value_direction = -1.0
+                try:
+                    if value_direction != None:
+                        location_db_dict[key] = abs(float(value)) * value_direction
+                    else:
+                        location_db_dict[key] = float(value)
+                except:
+                    location_db_dict[key] = 0.0
+
             geo_source = location_db_dict.get("geoSource", "geo-default")
             # Manual.
             if geo_source == "geo-default":
@@ -345,8 +379,14 @@ class WurbSettings(object):
         latitude = 0.0
         longitude = 0.0
         location_dict = self.get_location_dict()
-        default_latitude = float(location_dict.get("defaultLatitudeDd", "0.0"))
-        default_longitude = float(location_dict.get("defaultLongitudeDd", "0.0"))
+        try:
+            default_latitude = float(location_dict.get("defaultLatitudeDd", "0.0"))
+        except:
+            default_latitude = 0.0
+        try:
+            default_longitude = float(location_dict.get("defaultLongitudeDd", "0.0"))
+        except:
+            default_longitude = 0.0
         return default_latitude, default_longitude
 
     def get_valid_location(self):
@@ -377,18 +417,29 @@ class WurbSettings(object):
 
     def get_location_status(self):
         """ """
-        lat, long = self.get_default_location()
-        if (lat == 0.0) and (long == 0.0):
-            result = "Default position is not set."
-            result += "<br>"
-            result += "Will affect the scheduler."
-            return result
+        geo_source = self.get_location_dict().get("geoSource", "")
+
+        if geo_source == "geo-default":
+            lat, long = self.get_default_location()
+            if (lat == 0.0) and (long == 0.0):
+                result = "Default position is not set."
+                # result += "<br>"
+                # result += "Will affect the scheduler."
+                result += "<br>"
+                result += "Accepted formats:"
+                result += "<br>"
+                result += "12.3, -12.3, 12,3456, -12,3456"
+                result += "<br>"
+                result += "Lat: N12.34, S12.34"
+                result += "<br>"
+                result += "Long: E12.34, W12.34"
+                return result
 
         lat, long = self.get_valid_location()
         if (lat == 0.0) and (long == 0.0):
             return "Not valid. Scheduler not started."
         else:
-            geo_source = self.get_location_dict().get("geoSource", "")
+            # geo_source = self.get_location_dict().get("geoSource", "")
             if geo_source == "geo-gps":
                 if wurb_core.gps_reader:
                     no_of_satellites = wurb_core.gps_reader.get_number_of_satellites()
