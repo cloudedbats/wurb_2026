@@ -206,6 +206,9 @@ function updateSettings(settings) {
     byId("recUseGpsTimeId").value = settings.useGpsTime
     byId("recLastGpsAtStartupId").value = settings.lastGpsAtStartup
 
+    document.title = "WURB - " + settings.fileDirectory + " / " + settings.filenamePrefix
+    byId("navbarInfo").innerHTML = "WURB-2026 - " + settings.fileDirectory + " / " + settings.filenamePrefix
+ 
     modeSelectOnChange(updateDetector = false)
 }
 
