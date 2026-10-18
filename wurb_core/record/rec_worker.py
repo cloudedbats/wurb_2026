@@ -322,6 +322,8 @@ class RecWorker(object):
                                         )
                                         self.logger.info(message)
 
+                                    await wurb_core.wurb_rpi.send_external_trigger()
+
                                 # Accumulate in file queue.
                                 if first_sound_detected == True:
                                     sound_detected_counter += 1
