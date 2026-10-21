@@ -7,6 +7,7 @@
 import asyncio
 import logging
 from collections import deque
+import numpy
 
 import wurb_core
 import wurb_utils
@@ -34,6 +35,9 @@ class RecWorker(object):
         self.target_worker = None
         self.from_source_queue = None
         self.to_target_queue = None
+        #
+        self.time_drift_adjustment = 0.0
+        self.time_drift_adjustment_list = []
 
     def configure(self):
         """ """
@@ -198,6 +202,10 @@ class RecWorker(object):
             max_peak_hz = None
             max_peak_dbfs = None
 
+            # Reset time_drift_adjustment when restarted.
+            self.time_drift_adjustment = 0.0
+            self.time_drift_adjustment_list = []
+
             while True:
                 try:
                     try:
@@ -280,12 +288,22 @@ class RecWorker(object):
                                     await self.from_source_queue.put(False)  # Flush.
                                     return
 
+                                # Adjust for drift in adc_time (microphone) compared to detector_time.
+                                # Both adc_time and detector_time are stored as early as possible in the sound chain.
+                                self.time_drift_adjustment_calculator(
+                                    adc_time, detector_time
+                                )
+                                # Use adjusted adc_time.
+                                adjusted_adc_time = (
+                                    item["adc_time"] - self.time_drift_adjustment
+                                )
+
                                 # Store in list.
                                 new_item = {}
                                 new_item["status"] = "data-Counter-" + str(
                                     sound_detected_counter
                                 )
-                                new_item["adc_time"] = item["adc_time"]
+                                new_item["adc_time"] = adjusted_adc_time
                                 new_item["data"] = item["data"]
 
                                 self.process_deque.append(new_item)
@@ -297,7 +315,7 @@ class RecWorker(object):
 
                                 # Check for sound.
                                 detection_result = sound_detector.check_for_sound(
-                                    (item["adc_time"], item["data"])
+                                    (adjusted_adc_time, item["data"])
                                 )
                                 (
                                     sound_detected,
@@ -463,4 +481,28 @@ class RecWorker(object):
                         return
         except Exception as e:
             message = "RecWorker - remove_items_from_queue. Exception: " + str(e)
+            self.logger.debug(message)
+
+    def time_drift_adjustment_calculator(self, adc_time, detector_time):
+        """ """
+        time_diff = detector_time - adc_time
+        print("Time diff: ", time_diff)
+        self.time_drift_adjustment_list.append(float(time_diff))
+
+        if len(self.time_drift_adjustment_list) >= 100:
+            mean_time_diff = numpy.mean(sorted(self.time_drift_adjustment_list)[20:80])
+            self.time_drift_adjustment = mean_time_diff
+            self.time_drift_adjustment_list = []
+
+            # Debug.
+            diff = detector_time - adc_time
+            adjusted_diff_1 = detector_time - adc_time - self.time_drift_adjustment
+            message = (
+                "ADC time diff: "
+                + str(diff)
+                + " Adjusted: "
+                + str(adjusted_diff_1)
+                + " Mean: "
+                + str(mean_time_diff)
+            )
             self.logger.debug(message)

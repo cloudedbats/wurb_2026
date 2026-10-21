@@ -223,7 +223,8 @@ class AudioCapture:
                         for data_queue in self.out_queue_list:
                             # Time rounded to half sec.
                             calculated_time_s += time_increment_s
-                            device_time = int((calculated_time_s) * 2) / 2
+                            # device_time = int((calculated_time_s) * 2) / 2
+                            device_time = round(calculated_time_s, 4)
                             # Used to detect time drift.
                             detector_time = time.time()
                             # Copy data.
