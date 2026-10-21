@@ -103,9 +103,9 @@ rec_manager:
   mic_read_buffer_s: 0.01
   external_trigger_http_method: post
   external_trigger_url: ""
-  # external_trigger_url: "http://localhost:8082/camera/external-trigger"
-  # external_trigger_url: "http://wurb01.local:8082/camera/external-trigger"
-  # external_trigger_url: "http://wurb01:8082/camera/external-trigger"
+  # external_trigger_url: "http://localhost:8082/camera/video-trigger"
+  # external_trigger_url: "http://wurb01.local:8082/camera/video-trigger"
+  # external_trigger_url: "http://wurb01:8082/camera/video-trigger"
   external_trigger_timeout: 1.0
 
 wurb_logger:
