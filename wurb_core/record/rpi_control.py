@@ -261,7 +261,9 @@ class WurbRaspberryPi(object):
             self.logger.debug(message)
 
     async def send_external_trigger(self):
-        """ """
+        """External trigger is mainly used to trigger Wirc video.
+        Check "wurb_settings/wurb_config.yaml" to setup the API URL.
+        """
         try:
             if len(self.external_trigger_url) > 0:
                 # Logging.

@@ -322,6 +322,8 @@ class RecWorker(object):
                                         )
                                         self.logger.info(message)
 
+                                    # External trigger is mainly used to trigger Wirc video.
+                                    # Check "wurb_settings/wurb_config.yaml" to setup the API URL.
                                     await wurb_core.wurb_rpi.send_external_trigger()
 
                                 # Accumulate in file queue.
