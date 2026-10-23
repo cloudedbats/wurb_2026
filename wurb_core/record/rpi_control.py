@@ -35,21 +35,13 @@ class WurbRaspberryPi(object):
         """ """
         self.os_debian = None
         self.rec_targets = []
-        self.external_trigger_http_method = "post"
-        self.external_trigger_url = ""
-        self.external_trigger_timeout = 1.0
+        self.detected_sound_triggers = []
 
     def configure(self):
         """ """
         self.rec_targets = wurb_core.config.get("record.targets")
-        self.external_trigger_http_method = wurb_core.config.get(
-            "rec_manager.external_trigger_http_method"
-        )
-        self.external_trigger_url = wurb_core.config.get(
-            "rec_manager.external_trigger_url"
-        )
-        self.external_trigger_timeout = wurb_core.config.get(
-            "rec_manager.external_trigger_timeout"
+        self.detected_sound_triggers = wurb_core.config.get(
+            "rec_manager.detected_sound_triggers"
         )
 
     async def rpi_control(self, command):
@@ -260,49 +252,59 @@ class WurbRaspberryPi(object):
             message = "WurbRaspberryPi - rpi_clear_sd. Exception: " + str(e)
             self.logger.debug(message)
 
-    async def send_external_trigger(self):
+    async def send_external_triggers(self):
         """External trigger is mainly used to trigger Wirc video.
         Check "wurb_settings/wurb_config.yaml" to setup the API URL.
         """
         try:
-            if len(self.external_trigger_url) > 0:
-                # Logging.
-                message = "External trigger: "
-                message += "(" + self.external_trigger_http_method + ") "
-                message += self.external_trigger_url
-                self.logger.info(message)
-                await asyncio.sleep(0)
-                #
+            if len(self.detected_sound_triggers) > 0:
                 self.external_trigger_task = asyncio.create_task(
-                    self.trigger_task(), name="External trigger"
+                    self.trigger_task(), name="External triggers"
                 )
         except Exception as e:
-            message = "WurbRaspberryPi - send_external_trigger. Exception: " + str(e)
+            message = "WurbRaspberryPi - send_external_triggers. Exception: " + str(e)
             self.logger.debug(message)
 
     async def trigger_task(self):
         """ """
         try:
-            json = ""
-            if len(self.external_trigger_url) > 0:
-                if self.external_trigger_http_method.lower() == "get":
-                    requests.get(
-                        self.external_trigger_url,
-                        json,
-                        timeout=self.external_trigger_timeout,
-                    )
-                elif self.external_trigger_http_method.lower() == "post":
-                    requests.post(
-                        self.external_trigger_url,
-                        json,
-                        timeout=self.external_trigger_timeout,
-                    )
-        except requests.Timeout:
-            print("requests.Timeout")
-            pass
-        except requests.ConnectionError:
-            print("requests.ConnectionError")
-            pass
+            for trigger in self.detected_sound_triggers:
+                trigger_http_method = trigger.get("trigger_http_method", "post")
+                trigger_url = trigger.get("trigger_url", "")
+                trigger_timeout = float(trigger.get("trigger_timeout", "1.0"))
+                json = ""
+                await asyncio.sleep(0)
+                if len(trigger_url) > 0:
+                    try:
+                        if trigger_http_method.lower() == "get":
+                            requests.get(
+                                trigger_url,
+                                json,
+                                timeout=trigger_timeout,
+                            )
+                        elif trigger_http_method.lower() == "post":
+                            requests.post(
+                                trigger_url,
+                                json,
+                                timeout=trigger_timeout,
+                            )
+                        # Logging.
+                        message = "External trigger: "
+                        message += "(" + trigger_http_method + ") "
+                        message += trigger_url
+                        self.logger.info(message)
+                    except requests.Timeout:
+                        # Logging.
+                        message = "External trigger. Timeout error: "
+                        message += "(" + trigger_http_method + ") "
+                        message += trigger_url
+                        self.logger.info(message)
+                    except requests.ConnectionError:
+                        # Logging.
+                        message = "External trigger. Connection error: "
+                        message += "(" + trigger_http_method + ") "
+                        message += trigger_url
+                        self.logger.info(message)
         except Exception as e:
             message = "WurbRaspberryPi - trigger_task. Exception: " + str(e)
             self.logger.debug(message)
